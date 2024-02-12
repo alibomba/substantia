@@ -1,0 +1,8 @@
+-homepage
+-rejestracja
+-logowanie
+-profile creation
+-ustawienia
+-profil(content dla subskrybentow lub preview dla nie-subskrybentow)
+-feed(profile, ktore uzytkownik ma zasubskrybowane)
+-search results(wyszukiwanie profili)
