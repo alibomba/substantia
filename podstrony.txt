@@ -1,8 +1,8 @@
--homepage
--rejestracja
--logowanie
--profile creation
--ustawienia
+-homepage*
+-rejestracja*
+-logowanie*
+-profile creation(modal w ustawieniach [wystarczy dodac pare rzeczy do ustawien uzytkownika])*
+-ustawienia*
 -profil(content dla subskrybentow lub preview dla nie-subskrybentow)
 -feed(profile, ktore uzytkownik ma zasubskrybowane)
 -search results(wyszukiwanie profili)
