@@ -1,0 +1,9 @@
+export { default as Bookmarks } from './bookmarks/Bookmarks';
+export { default as Feed } from './feed/Feed';
+export { default as Homepage } from './homepage/Homepage';
+export { default as Login } from './login/Login';
+export { default as NotFound } from './notFound/NotFound';
+export { default as Profile } from './profile/Profile';
+export { default as Register } from './register/Register';
+export { default as Search } from './search/Search';
+export { default as Settings } from './settings/Settings';
