@@ -84,7 +84,111 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
-
+  /api/login:
+    post:
+      summary: User login
+      parameters:
+        - name: email
+          in: body
+          type: string
+          required: true
+        - name: password
+          in: body
+          type: string
+          required: true
+      responses:
+        200:
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+        401:
+          description: Incorrect e-mail or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/auth:
+    get:
+      summary: Check if a user is authorized and get their payload
+      security:
+        - JwtAuth: []
+      responses:
+        200:
+          description: User is authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                  username:
+                    type: string
+                  avatar:
+                    type: string
+                    nullable: true
+                  slug:
+                    type: string
+                  hasChannel:
+                    type: boolean
+        401:
+          description: User is not authorized or a user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/refresh:
+    post:
+      summary: Get a new access token if your old one expired
+      parameters:
+        - name: refreshToken
+          in: body
+          type: string
+          required: true
+      responses:
+        200:
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+        401:
+          description: Refresh token incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/logout:
+    post:
+      summary: User logout
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: refreshToken
+          in: body
+          type: string
+          required: true
+      responses:
+        204:
+          description: User logged out successfully
+        401:
+          description: User unauthorized or a refresh token is incorrect
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
 
 definitions:
   Error:
