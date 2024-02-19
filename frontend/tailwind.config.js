@@ -8,8 +8,12 @@ export default {
     extend: {
       colors: {
         primary: "#8A2BE2",
+        primaryHover: "#791AD1",
         black: '#1F1726',
         black65: "rgba(31, 23, 38, .65)"
+      },
+      transitionProperty: {
+        primary: 'all 200ms ease'
       }
     },
   },

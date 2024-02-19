@@ -21,6 +21,8 @@ class UserService {
         if (username.length > 20) throw new Error('Nazwa użytkownika może mieć maksymalnie 20 znaków', { cause: 'VALIDATION' });
         if (!slug) throw new Error('Identyfikator jest wymagany', { cause: 'VALIDATION' });
         if (slug.length > 20) throw new Error('Identyfikator może mieć maksymalnie 20 znaków', { cause: 'VALIDATION' });
+        const slugRegex = /^[a-z0-9]+$/;
+        if (!slug.match(slugRegex)) throw new Error('Identyfikator może mieć tylko małe litery i cyfry', { cause: 'VALIDATION' });
         const slugFound = await this.findUserBySlug(slug);
         if (slugFound) throw new Error('Identyfikator jest już zajęty', { cause: 'VALIDATION' });
         if (!password) throw new Error('Hasło jest wymagane', { cause: 'VALIDATION' });

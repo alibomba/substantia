@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import app from "../../app";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockFindUserByEmail, mockSaveToken, mockSignToken, mockUser, mockVerifyPassword } from "../mocks";
+import { mockFindUserByEmail, mockPayload, mockSaveToken, mockSignToken, mockUser, mockVerifyPassword } from "../mocks";
 import { MyJWTPayload } from "../../types";
 
 vi.mock('../../models/prisma');
@@ -92,7 +92,7 @@ describe('POST /login', () => {
             expect(mockSaveToken).toHaveBeenCalledWith('refreshToken');
         });
 
-        it('returns 200 status and access and refresh tokens', async () => {
+        it('returns 200 status, access token, refresh token and a payload', async () => {
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockVerifyPassword.mockResolvedValueOnce(true);
             mockSignToken.mockReturnValueOnce('accessToken');
@@ -102,7 +102,7 @@ describe('POST /login', () => {
                 .send({ email: 'test@gmail.com', password: 'qwerty123' });
 
             expect(statusCode).toBe(200);
-            expect(body).toEqual({ accessToken: 'accessToken', refreshToken: 'refreshToken' });
+            expect(body).toEqual({ accessToken: 'accessToken', refreshToken: 'refreshToken', payload: mockPayload });
         });
     });
 });

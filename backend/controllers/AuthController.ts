@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import AuthService from '../services/AuthService';
 import UserService from '../services/UserService';
+import GoogleService from '../services/GoogleService';
 import { MyJWTPayload } from '../types';
 
 class AuthController {
@@ -16,7 +17,7 @@ class AuthController {
         const refreshToken = AuthService.signToken(payload, 'refresh');
         try {
             await AuthService.saveToken(refreshToken);
-            res.json({ accessToken, refreshToken });
+            res.json({ accessToken, refreshToken, payload });
         } catch (err) {
             res.sendStatus(500);
         }
@@ -58,6 +59,41 @@ class AuthController {
             res.sendStatus(204);
         } catch (err) {
             res.sendStatus(500);
+        }
+    }
+
+    public async googleLogin(req: Request, res: Response) {
+        const { token } = req.body;
+        let googleUser;
+        try {
+            googleUser = await GoogleService.getGoogleUser(token);
+        } catch (exception) {
+            const error = exception as Error;
+            if (error.cause === 'AUTHORIZATION') {
+                return res.status(401).json({ message: error.message });
+            }
+            else {
+                return res.sendStatus(500);
+            }
+        }
+        if (!googleUser.email) return res.status(422).json({ message: 'Adres e-mail jest wymagany' });
+        const userFound = await UserService.findUserByEmail(googleUser.email);
+        if (userFound && userFound.oAuth) {
+            const payload: MyJWTPayload = { id: userFound.id, email: userFound.email, username: userFound.username, slug: userFound.slug, avatar: userFound.avatar, hasChannel: userFound.hasChannel };
+            const accessToken = AuthService.signToken(payload, 'access');
+            const refreshToken = AuthService.signToken(payload, 'refresh');
+            try {
+                await AuthService.saveToken(refreshToken);
+                res.json({ accessToken, refreshToken });
+            } catch (err) {
+                res.sendStatus(500);
+            }
+        }
+        else if (!userFound) {
+            //create user and sign tokens
+        }
+        else if (userFound && !userFound.oAuth) {
+            return res.status(422).json({ message: 'Adres e-mail jest już zajęty' });
         }
     }
 }

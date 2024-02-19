@@ -23,7 +23,10 @@ describe('POST /register', () => {
                 { email: 'test@gmail.com', username: 'testtesttesttesttestt', slug: 'testslug', password: 'qwerty123' },
                 { email: 'test@gmail.com', username: 'testuser', slug: 'testslugtestslugtests', password: 'qwerty123' },
                 { email: 'test@gmail.com', username: 'testuser', slug: 'testslug', password: 'qwerty' },
-                { email: 'test@gmail.com', username: 'testuser', slug: 'testslug', password: 'qwertyqwertyqwertyqwertyqwertyqwertyqwertyqwertyqwertyqwertyq' }
+                { email: 'test@gmail.com', username: 'testuser', slug: 'testslug', password: 'qwertyqwertyqwertyqwertyqwertyqwertyqwertyqwertyqwertyqwertyq' },
+                { email: 'test@gmail.com', username: 'testuser', slug: 'testslug!', password: 'qwerty123' },
+                { email: 'test@gmail.com', username: 'testuser', slug: 'testslug?', password: 'qwerty123' },
+                { email: 'test@gmail.com', username: 'testuser', slug: 'testslug,', password: 'qwerty123' },
             ];
 
             await Promise.all(invalidData.map(async data => {

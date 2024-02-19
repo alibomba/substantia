@@ -108,6 +108,8 @@ paths:
                     type: string
                   refreshToken:
                     type: string
+                  payload:
+                    $ref: "#/definitions/UserPayload"
         401:
           description: Incorrect e-mail or password
           content:
@@ -125,21 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  email:
-                    type: string
-                  username:
-                    type: string
-                  avatar:
-                    type: string
-                    nullable: true
-                  slug:
-                    type: string
-                  hasChannel:
-                    type: boolean
+                $ref: "#/definitions/UserPayload"
         401:
           description: User is not authorized or a user does not exist
           content:
@@ -196,3 +184,19 @@ definitions:
     properties:
       message:
         type: string
+  UserPayload:
+    type: object
+    properties:
+      id:
+        type: string
+      email:
+        type: string
+      username:
+        type: string
+      avatar:
+        type: string
+        nullable: true
+      slug:
+        type: string
+      hasChannel:
+        type: boolean
