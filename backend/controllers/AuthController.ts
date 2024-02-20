@@ -3,6 +3,7 @@ import AuthService from '../services/AuthService';
 import UserService from '../services/UserService';
 import GoogleService from '../services/GoogleService';
 import { MyJWTPayload } from '../types';
+import { generateUniqueSlug, generateUsername } from '../utils'
 
 class AuthController {
     public async login(req: Request, res: Response) {
@@ -64,6 +65,7 @@ class AuthController {
 
     public async googleLogin(req: Request, res: Response) {
         const { token } = req.body;
+        if (!token) return res.status(401).json({ message: 'Token jest wymagany' });
         let googleUser;
         try {
             googleUser = await GoogleService.getGoogleUser(token);
@@ -84,13 +86,24 @@ class AuthController {
             const refreshToken = AuthService.signToken(payload, 'refresh');
             try {
                 await AuthService.saveToken(refreshToken);
-                res.json({ accessToken, refreshToken });
+                res.json({ accessToken, refreshToken, payload });
             } catch (err) {
                 res.sendStatus(500);
             }
         }
         else if (!userFound) {
-            //create user and sign tokens
+            const username = generateUsername(googleUser.email);
+            const slug = await generateUniqueSlug(googleUser.email);
+            const newUser = await UserService.createOAuthUser(googleUser.email, username, slug);
+            const payload: MyJWTPayload = { id: newUser.id, email: newUser.email, username: newUser.username, slug: newUser.slug, avatar: newUser.avatar, hasChannel: newUser.hasChannel };
+            const accessToken = AuthService.signToken(payload, 'access');
+            const refreshToken = AuthService.signToken(payload, 'refresh');
+            try {
+                await AuthService.saveToken(refreshToken);
+                res.status(201).json({ accessToken, refreshToken, payload });
+            } catch (err) {
+                res.sendStatus(500);
+            }
         }
         else if (userFound && !userFound.oAuth) {
             return res.status(422).json({ message: 'Adres e-mail jest już zajęty' });

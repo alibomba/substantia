@@ -3,6 +3,8 @@ import { vi } from "vitest";
 import UserService from "../services/UserService";
 import AuthService from "../services/AuthService";
 import { MyJWTPayload } from "../types";
+import GoogleService from "../services/GoogleService";
+import { TokenPayload } from "google-auth-library";
 
 export const mockUser: User = {
     id: '123',
@@ -46,3 +48,30 @@ export const mockFindToken = vi.spyOn(AuthService, 'findToken');
 export const mockRefreshToken: RefreshToken = { id: '123', token: 'token', issuedAt: new Date() };
 
 export const mockDeleteToken = vi.spyOn(AuthService, 'deleteToken');
+
+export const mockGetGoogleUser = vi.spyOn(GoogleService, 'getGoogleUser');
+
+export const mockGoogleUserPayload: TokenPayload = { aud: '', exp: 123, iat: 123, iss: '', sub: '', email: 'test@gmail.com' };
+
+export const mockGoogleUserPayloadNoEmail: TokenPayload = { aud: '', exp: 123, iat: 123, iss: '', sub: '' };
+
+export const mockCreateOAuthUser = vi.spyOn(UserService, 'createOAuthUser');
+
+export const mockOAuthUser: User = {
+    id: '123',
+    email: 'test@gmail.com',
+    username: 'test',
+    slug: 'test',
+    password: null,
+    oAuth: true,
+    hasChannel: false,
+    subscriptionPrice: null,
+    avatar: null,
+    banner: null,
+    profileVideo: null,
+    facebook: null,
+    instagram: null,
+    twitter: null,
+    description: null,
+    createdAt: new Date()
+}

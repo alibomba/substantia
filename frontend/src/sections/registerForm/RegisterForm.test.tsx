@@ -82,4 +82,25 @@ describe('RegisterForm', () => {
             expect(popup).toHaveTextContent('Validation error');
         });
     });
+
+    describe('register was successfull', () => {
+        it('shows a message popup', async () => {
+            mockAxios.onPost('/register').reply(201);
+            renderComponent();
+            const inputContainers = screen.getAllByTestId('input');
+            const inputs = inputContainers.map(container => container.querySelector('input')) as HTMLInputElement[];
+            const button = screen.getByRole('button');
+            fireEvent.change(inputs[0], { target: { value: 'test@gmail.com' } });
+            fireEvent.change(inputs[1], { target: { value: 'Test User' } });
+            fireEvent.change(inputs[2], { target: { value: 'testuser' } });
+            fireEvent.change(inputs[3], { target: { value: 'qwerty123' } });
+            fireEvent.change(inputs[4], { target: { value: 'qwerty123' } });
+            await waitFor(() => {
+                fireEvent.click(button);
+            });
+            const popup = screen.getByRole('alert');
+            expect(popup.ariaLive).toBe('assertive');
+            expect(popup).toHaveTextContent('Utworzono konto');
+        });
+    });
 });

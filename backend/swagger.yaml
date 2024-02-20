@@ -177,6 +177,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/google-login:
+    post:
+      summary: User login with Google
+      parameters:
+        - name: token
+          in: body
+          type: string
+          required: true
+      responses:
+        200:
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  payload:
+                    $ref: "#/definitions/UserPayload"
+        201:
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  payload:
+                    $ref: "#/definitions/UserPayload"
+        401:
+          description: No token was given
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
 
 definitions:
   Error:

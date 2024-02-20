@@ -32,6 +32,15 @@ class UserService {
     public async createUser(email: string, username: string, slug: string, password: string) {
         return await prisma.user.create({ data: { email, username, slug, password, oAuth: false } });
     }
+
+    public async getExistingSlugs() {
+        const users = await prisma.user.findMany({ select: { slug: true } });
+        return users.map(user => user.slug);
+    }
+
+    public async createOAuthUser(email: string, username: string, slug: string) {
+        return await prisma.user.create({ data: { email, username, slug, oAuth: true } });
+    }
 }
 
 export default new UserService();
