@@ -28,10 +28,11 @@ const GoogleLogin = ({ text }: Props) => {
                     token
                 }
             });
-            const { accessToken, refreshToken } = data;
+            const { accessToken, refreshToken, payload } = data;
             setIsAuthorized(true);
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
+            setPayload(payload);
             navigate('/feed');
         } catch (err: any) {
             if (err?.response?.status === 422 || err?.response?.status === 401) {
