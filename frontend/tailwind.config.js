@@ -14,6 +14,9 @@ export default {
       },
       transitionProperty: {
         primary: 'all 200ms ease'
+      },
+      screens: {
+        mobileNav: '830px'
       }
     },
   },

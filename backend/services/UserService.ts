@@ -41,6 +41,10 @@ class UserService {
     public async createOAuthUser(email: string, username: string, slug: string) {
         return await prisma.user.create({ data: { email, username, slug, oAuth: true } });
     }
+
+    public async updateUserPassword(id: string, password: string) {
+        return await prisma.user.update({ where: { id }, data: { password } });
+    }
 }
 
 export default new UserService();

@@ -5,6 +5,7 @@ import AuthService from "../services/AuthService";
 import { MyJWTPayload } from "../types";
 import GoogleService from "../services/GoogleService";
 import { TokenPayload } from "google-auth-library";
+import EmailService from "../services/EmailService";
 
 export const mockUser: User = {
     id: '123',
@@ -75,3 +76,11 @@ export const mockOAuthUser: User = {
     description: null,
     createdAt: new Date()
 }
+
+export const mockCreatePasswordResetToken = vi.spyOn(AuthService, 'createPasswordResetToken');
+
+export const mockSendPasswordResetToken = vi.spyOn(EmailService, 'sendPasswordResetToken');
+
+export const mockVerifyPasswordResetToken = vi.spyOn(AuthService, 'verifyPasswordResetToken');
+
+export const mockUpdateUserPassword = vi.spyOn(UserService, 'updateUserPassword');

@@ -224,6 +224,51 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/password-reset:
+    post:
+      summary: Request to reset a user's password
+      parameters:
+        - name: email
+          in: body
+          type: string
+          required: true
+      responses:
+        204:
+          description: Password reset token was created and a reset URL sent to the user via e-mail
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/password-reset/{token}:
+    post:
+      summary: Resets a user's password
+      parameters:
+        - name: token
+          in: path
+          type: string
+          required: true
+        - name: newPassword
+          in: body
+          type: string
+          required: true
+      responses:
+        204:
+          description: Password was updated successfully
+        401:
+          description: Token incorrect or user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+
 
 definitions:
   Error:

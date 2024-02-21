@@ -53,6 +53,24 @@ class AuthService {
     public async deleteToken(token: string) {
         await prisma.refreshToken.delete({ where: { token } });
     }
+
+    public async createPasswordResetToken(email: string) {
+        const payload = { email };
+        const token = jwt.sign(payload, process.env.PASSWORD_RESET_JWT_SECRET as string, { expiresIn: '15m' });
+        await prisma.passwordResetToken.create({ data: { token } });
+        return token;
+    }
+
+    public async verifyPasswordResetToken(token: string) {
+        const tokenDB = await prisma.passwordResetToken.findUnique({ where: { token } });
+        if (!tokenDB) throw { message: 'Token nieprawidłowy' };
+        return new Promise((resolve, reject) => {
+            jwt.verify(token, process.env.PASSWORD_RESET_JWT_SECRET as string, (err, payload) => {
+                if (err) reject(err);
+                resolve(payload);
+            });
+        });
+    }
 }
 
 export default new AuthService();

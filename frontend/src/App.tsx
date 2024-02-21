@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Bookmarks, Feed, Homepage, Login, NotFound, Profile, Register, Search, Settings } from './pages';
+import { Bookmarks, Feed, Homepage, Login, NotFound, Profile, Register, Search, Settings, PasswordReset } from './pages';
 import { AuthProvider } from "./contexts/AuthProvider";
 import DefaultLayout from "./layouts/DefaultLayout";
 import UserOnlyLayout from "./layouts/UserOnlyLayout";
@@ -13,6 +13,7 @@ function App() {
           <Route path='*' element={<NotFound />} />
           <Route path='/rejestracja' element={<Register />} />
           <Route path='/logowanie' element={<Login />} />
+          <Route path='/password-reset' element={<PasswordReset />} />
           <Route path='/' element={<DefaultLayout />}>
             <Route index element={<Homepage />} />
             <Route path='/profil/:id' element={<Profile />} />

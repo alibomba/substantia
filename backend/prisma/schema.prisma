@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model PasswordResetToken {
+  id       String   @id @default(uuid())
+  token    String   @unique
+  issuedAt DateTime @default(now())
+}
+
 model RefreshToken {
   id       String   @id @default(uuid())
   token    String   @unique
