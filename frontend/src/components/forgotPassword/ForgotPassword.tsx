@@ -51,7 +51,7 @@ const ForgotPassword = () => {
             {
                 isActive &&
                 <>
-                    <div data-testid='forgotPasswordModal' className="z-[3] fixed top-52 left-1/2 transform -translate-x-1/2 w-[45em] max-md:w-[95%] h-80 rounded-3xl bg-white flex flex-col items-center gap-4 p-8">
+                    <div data-testid='forgotPasswordModal' className="z-[1000] fixed top-52 left-1/2 transform -translate-x-1/2 w-[45em] max-md:w-[95%] h-80 rounded-3xl bg-white flex flex-col items-center gap-4 p-8">
                         <p className="text-4xl max-[500px]:text-3xl font-medium text-center">Podaj adres e-mail</p>
                         <Input
                             type="email"
@@ -64,7 +64,7 @@ const ForgotPassword = () => {
                             <IoMdClose />
                         </button>
                     </div>
-                    <div className="fixed inset-0 z-[2] bg-overlayBlack"></div>
+                    <div className="fixed inset-0 z-[999] bg-overlayBlack"></div>
                 </>
             }
             <Popup active={popup.active} type={popup.type}>{popup.content}</Popup>
