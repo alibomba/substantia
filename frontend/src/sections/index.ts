@@ -3,3 +3,4 @@ export { default as LoginRegisterHeader } from './loginRegisterHeader/LoginRegis
 export { default as RegisterForm } from './registerForm/RegisterForm';
 export { default as LoginForm } from './loginForm/LoginForm';
 export { default as Hero } from './hero/Hero';
+export { default as HomeSection } from './homeSection/HomeSection';
