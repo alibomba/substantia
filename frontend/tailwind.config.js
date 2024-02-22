@@ -18,6 +18,9 @@ export default {
       },
       screens: {
         mobileNav: '830px'
+      },
+      backgroundSize: {
+        '100': '50%'
       }
     },
   },

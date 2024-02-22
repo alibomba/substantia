@@ -90,7 +90,7 @@ const Header = () => {
                         <GiHamburgerMenu />
                     </button>
                 </div>
-                <nav className={`${isNavHidden && 'hidden'} ${isNavActive ? 'scale-y-1' : 'scale-y-0'} origin-top transition-primary absolute top-[100%] left-0 right-0 px-5 py-10 flex flex-col items-center gap-4 shadow-md z-50`}>
+                <nav className={`${isNavHidden && 'hidden'} ${isNavActive ? 'scale-y-1' : 'scale-y-0'} bg-white origin-top transition-primary absolute top-[100%] left-0 right-0 px-5 py-10 flex flex-col items-center gap-4 shadow-md z-50`}>
                     {
                         isAuthorized ?
                             <>
