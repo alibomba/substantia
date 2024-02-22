@@ -34,7 +34,7 @@ describe('LoginForm', () => {
             await waitFor(() => {
                 fireEvent.click(button);
             });
-            const error = screen.getByRole('alert');
+            const error = screen.getByTestId('loginError');
             expect(error).toHaveTextContent('Login error');
         });
     });

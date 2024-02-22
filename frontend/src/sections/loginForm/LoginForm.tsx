@@ -65,7 +65,7 @@ const LoginForm = () => {
                 required
             />
             {
-                loginError && <p role="alert" aria-live="assertive" className="text-4xl max-sm:text-2xl text-red-500 font-medium text-center">{loginError}</p>
+                loginError && <p data-testid='loginError' role="alert" aria-live="assertive" className="text-4xl max-sm:text-2xl text-red-500 font-medium text-center">{loginError}</p>
             }
             <ForgotPassword />
             <button className="text-4xl max-sm:text-3xl text-white text-center bg-primary hover:bg-primaryHover transition-primary w-full px-5 py-3 font-medium rounded-full">Zaloguj się</button>

@@ -10,7 +10,8 @@ export default {
         primary: "#8A2BE2",
         primaryHover: "#791AD1",
         black: '#1F1726',
-        black65: "rgba(31, 23, 38, .65)"
+        black65: "rgba(31, 23, 38, .65)",
+        overlayBlack: "rgba(0, 0, 0, .6)"
       },
       transitionProperty: {
         primary: 'all 200ms ease'
