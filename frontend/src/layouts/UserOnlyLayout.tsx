@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { Header } from "../sections";
+import { Footer, Header } from "../sections";
 import { AuthContext } from "../contexts/AuthProvider";
 import Loading from "../components/loading/Loading";
 
@@ -19,6 +19,7 @@ const UserOnlyLayout = () => {
         <>
             <Header />
             <Outlet />
+            <Footer />
         </>
     )
 }

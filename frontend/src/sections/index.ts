@@ -6,3 +6,4 @@ export { default as Hero } from './hero/Hero';
 export { default as HomeSection } from './homeSection/HomeSection';
 export { default as Qualities } from './qualities/Qualities';
 export { default as Statistics } from './statistics/Statistics';
+export { default as Footer } from './footer/Footer';
