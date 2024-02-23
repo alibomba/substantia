@@ -1,4 +1,4 @@
-import { Hero, HomeSection } from "../../sections"
+import { Hero, HomeSection, Qualities } from "../../sections"
 
 
 const Homepage = () => {
@@ -19,6 +19,7 @@ const Homepage = () => {
                 imageAlt="kobieta ustawiająca aparat w telefonie pod lampą pierścieniową"
                 textFirst={true}
             />
+            <Qualities />
         </>
     )
 }
