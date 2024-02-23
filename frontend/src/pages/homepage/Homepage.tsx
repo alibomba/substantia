@@ -1,4 +1,4 @@
-import { Hero, HomeSection, Qualities } from "../../sections"
+import { Hero, HomeSection, Qualities, Statistics } from "../../sections"
 
 
 const Homepage = () => {
@@ -20,6 +20,7 @@ const Homepage = () => {
                 textFirst={true}
             />
             <Qualities />
+            <Statistics />
         </>
     )
 }

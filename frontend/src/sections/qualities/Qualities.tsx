@@ -5,7 +5,7 @@ import { IoIosPeople } from 'react-icons/io';
 
 const Qualities = () => {
     return (
-        <section id="qualities" className="mt-40 px-4 flex items-center justify-center gap-12 max-sm:gap-8 flex-wrap">
+        <section id="qualities" className="mt-32 px-4 flex items-center justify-center gap-12 max-sm:gap-8 flex-wrap">
             <QualityArticle
                 icon={RiShieldKeyholeFill}
                 heading="Wyłączność"
