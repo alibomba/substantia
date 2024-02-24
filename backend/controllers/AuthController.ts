@@ -5,6 +5,7 @@ import GoogleService from '../services/GoogleService';
 import { MyJWTPayload } from '../types';
 import { generateUniqueSlug, generateUsername } from '../utils'
 import EmailService from '../services/EmailService';
+import AzureService from '../services/AzureService';
 
 class AuthController {
     public async login(req: Request, res: Response) {
@@ -14,7 +15,14 @@ class AuthController {
         if (!userFound) return res.status(401).json({ message: 'Niepoprawny e-mail lub hasło' });
         if (userFound.oAuth) return res.status(401).json({ message: 'Zaloguj się za pomocą Google' });
         if (!await AuthService.verifyPassword(password, userFound.password as string)) return res.status(401).json({ message: 'Niepoprawny e-mail lub hasło' });
-        const payload: MyJWTPayload = { id: userFound.id, email: userFound.email, username: userFound.username, slug: userFound.slug, avatar: userFound.avatar, hasChannel: userFound.hasChannel };
+        let avatar;
+        if (userFound.avatar) {
+            avatar = await AzureService.getAzureObject(`pfp/${userFound.avatar}`);
+        }
+        else {
+            avatar = userFound.avatar;
+        }
+        const payload: MyJWTPayload = { id: userFound.id, email: userFound.email, username: userFound.username, slug: userFound.slug, avatar, hasChannel: userFound.hasChannel };
         const accessToken = AuthService.signToken(payload, 'access');
         const refreshToken = AuthService.signToken(payload, 'refresh');
         try {
@@ -82,7 +90,14 @@ class AuthController {
         if (!googleUser.email) return res.status(422).json({ message: 'Adres e-mail jest wymagany' });
         const userFound = await UserService.findUserByEmail(googleUser.email);
         if (userFound && userFound.oAuth) {
-            const payload: MyJWTPayload = { id: userFound.id, email: userFound.email, username: userFound.username, slug: userFound.slug, avatar: userFound.avatar, hasChannel: userFound.hasChannel };
+            let avatar;
+            if (userFound.avatar) {
+                avatar = await AzureService.getAzureObject(`pfp/${userFound.avatar}`);
+            }
+            else {
+                avatar = userFound.avatar;
+            }
+            const payload: MyJWTPayload = { id: userFound.id, email: userFound.email, username: userFound.username, slug: userFound.slug, avatar, hasChannel: userFound.hasChannel };
             const accessToken = AuthService.signToken(payload, 'access');
             const refreshToken = AuthService.signToken(payload, 'refresh');
             try {

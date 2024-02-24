@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import app from "../../app";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockCreateOAuthUser, mockFindUserByEmail, mockGetGoogleUser, mockGoogleUserPayload, mockGoogleUserPayloadNoEmail, mockOAuthUser, mockPayload, mockSaveToken, mockSignToken, mockUser } from "../mocks";
+import { mockCreateOAuthUser, mockFindUserByEmail, mockGetAzureObject, mockGetGoogleUser, mockGoogleUserPayload, mockGoogleUserPayloadNoEmail, mockOAuthUser, mockPayload, mockSaveToken, mockSignToken, mockUser } from "../mocks";
 import * as utils from '../../utils';
 import { MyJWTPayload } from "../../types";
 
@@ -49,7 +49,7 @@ describe('POST /google-login', () => {
         });
     });
 
-    describe('user with oAuth was found', () => {
+    describe('user with oAuth and no profile picture was found', () => {
         it('signs 2 tokens with correct payload', async () => {
             mockGetGoogleUser.mockResolvedValueOnce(mockGoogleUserPayload);
             mockFindUserByEmail.mockResolvedValueOnce({ ...mockUser, oAuth: true });
@@ -89,6 +89,52 @@ describe('POST /google-login', () => {
 
             expect(statusCode).toBe(200);
             expect(body).toEqual({ accessToken: 'accessToken', refreshToken: 'refreshToken', payload: mockPayload });
+        });
+    });
+
+    describe('user with oAuth and a profile picture was found', () => {
+        it('signs 2 tokens with correct payload', async () => {
+            mockGetGoogleUser.mockResolvedValueOnce(mockGoogleUserPayload);
+            mockFindUserByEmail.mockResolvedValueOnce({ ...mockUser, oAuth: true, avatar: 'test-pfp.jpg' });
+            mockSignToken.mockReturnValueOnce('accessToken');
+            mockSignToken.mockReturnValueOnce('refreshToken');
+            mockGetAzureObject.mockResolvedValueOnce('https://azure.com/test-pfp.jpg');
+
+            await supertest(app)
+                .post('/api/google-login')
+                .send({ token: 'token' });
+
+            expect(mockSignToken).toHaveBeenNthCalledWith(1, { ...mockPayload, avatar: 'https://azure.com/test-pfp.jpg' }, 'access');
+            expect(mockSignToken).toHaveBeenNthCalledWith(2, { ...mockPayload, avatar: 'https://azure.com/test-pfp.jpg' }, 'refresh');
+        });
+
+        it('saves refresh token', async () => {
+            mockGetGoogleUser.mockResolvedValueOnce(mockGoogleUserPayload);
+            mockFindUserByEmail.mockResolvedValueOnce({ ...mockUser, oAuth: true, avatar: 'test-pfp.jpg' });
+            mockSignToken.mockReturnValueOnce('accessToken');
+            mockSignToken.mockReturnValueOnce('refreshToken');
+            mockGetAzureObject.mockResolvedValueOnce('https://azure.com/test-pfp.jpg');
+
+            await supertest(app)
+                .post('/api/google-login')
+                .send({ token: 'token' });
+
+            expect(mockSaveToken).toHaveBeenCalledWith('refreshToken');
+        });
+
+        it('returns 200 status, access token, refresh token and a user payload', async () => {
+            mockGetGoogleUser.mockResolvedValueOnce(mockGoogleUserPayload);
+            mockFindUserByEmail.mockResolvedValueOnce({ ...mockUser, oAuth: true, avatar: 'test-pfp.jpg' });
+            mockSignToken.mockReturnValueOnce('accessToken');
+            mockSignToken.mockReturnValueOnce('refreshToken');
+            mockGetAzureObject.mockResolvedValueOnce('https://azure.com/test-pfp.jpg');
+
+            const { statusCode, body } = await supertest(app)
+                .post('/api/google-login')
+                .send({ token: 'token' });
+
+            expect(statusCode).toBe(200);
+            expect(body).toEqual({ accessToken: 'accessToken', refreshToken: 'refreshToken', payload: { ...mockPayload, avatar: 'https://azure.com/test-pfp.jpg' } });
         });
     });
 

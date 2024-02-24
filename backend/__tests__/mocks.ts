@@ -6,6 +6,7 @@ import { MyJWTPayload } from "../types";
 import GoogleService from "../services/GoogleService";
 import { TokenPayload } from "google-auth-library";
 import EmailService from "../services/EmailService";
+import AzureService from "../services/AzureService";
 
 export const mockUser: User = {
     id: '123',
@@ -84,3 +85,5 @@ export const mockSendPasswordResetToken = vi.spyOn(EmailService, 'sendPasswordRe
 export const mockVerifyPasswordResetToken = vi.spyOn(AuthService, 'verifyPasswordResetToken');
 
 export const mockUpdateUserPassword = vi.spyOn(UserService, 'updateUserPassword');
+
+export const mockGetAzureObject = vi.spyOn(AzureService, 'getAzureObject');

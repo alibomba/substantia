@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import app from "../../app";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockFindUserByEmail, mockPayload, mockSaveToken, mockSignToken, mockUser, mockVerifyPassword } from "../mocks";
+import { mockFindUserByEmail, mockGetAzureObject, mockPayload, mockSaveToken, mockSignToken, mockUser, mockVerifyPassword } from "../mocks";
 import { MyJWTPayload } from "../../types";
 
 vi.mock('../../models/prisma');
@@ -66,7 +66,7 @@ describe('POST /login', () => {
         });
     });
 
-    describe('valid credentials given', () => {
+    describe('valid credentials given and a user does not have a profile picture', () => {
         it('signs 2 tokens with correct payload', async () => {
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockVerifyPassword.mockResolvedValueOnce(true);
@@ -103,6 +103,49 @@ describe('POST /login', () => {
 
             expect(statusCode).toBe(200);
             expect(body).toEqual({ accessToken: 'accessToken', refreshToken: 'refreshToken', payload: mockPayload });
+        });
+    });
+
+    describe('valid credentials given and a user has a profile picture', () => {
+        it('signs 2 tokens with correct payload', async () => {
+            mockFindUserByEmail.mockResolvedValueOnce({ ...mockUser, avatar: 'test-pfp.jpg' });
+            mockVerifyPassword.mockResolvedValueOnce(true);
+            mockSignToken.mockReturnValueOnce('accessToken');
+            mockSignToken.mockReturnValueOnce('refreshToken');
+            mockGetAzureObject.mockResolvedValueOnce('https://azure.com/test-pfp.jpg');
+            await supertest(app)
+                .post('/api/login')
+                .send({ email: 'test@gmail.com', password: 'qwerty123' });
+            const payload: MyJWTPayload = { id: mockUser.id, email: mockUser.email, username: mockUser.username, slug: mockUser.slug, avatar: 'https://azure.com/test-pfp.jpg', hasChannel: mockUser.hasChannel };
+            expect(mockSignToken).toHaveBeenNthCalledWith(1, payload, 'access');
+            expect(mockSignToken).toHaveBeenNthCalledWith(2, payload, 'refresh');
+        });
+
+        it('saves the refresh token', async () => {
+            mockFindUserByEmail.mockResolvedValueOnce({ ...mockUser, avatar: 'test-pfp.jpg' });
+            mockVerifyPassword.mockResolvedValueOnce(true);
+            mockSignToken.mockReturnValueOnce('accessToken');
+            mockSignToken.mockReturnValueOnce('refreshToken');
+            mockGetAzureObject.mockResolvedValueOnce('https://azure.com/test-pfp.jpg');
+            await supertest(app)
+                .post('/api/login')
+                .send({ email: 'test@gmail.com', password: 'qwerty123' });
+
+            expect(mockSaveToken).toHaveBeenCalledWith('refreshToken');
+        });
+
+        it('returns 200 status, access token, refresh token and a payload', async () => {
+            mockFindUserByEmail.mockResolvedValueOnce({ ...mockUser, avatar: 'test-pfp.jpg' });
+            mockVerifyPassword.mockResolvedValueOnce(true);
+            mockSignToken.mockReturnValueOnce('accessToken');
+            mockSignToken.mockReturnValueOnce('refreshToken');
+            mockGetAzureObject.mockResolvedValueOnce('https://azure.com/test-pfp.jpg');
+            const { statusCode, body } = await supertest(app)
+                .post('/api/login')
+                .send({ email: 'test@gmail.com', password: 'qwerty123' });
+
+            expect(statusCode).toBe(200);
+            expect(body).toEqual({ accessToken: 'accessToken', refreshToken: 'refreshToken', payload: { ...mockPayload, avatar: 'https://azure.com/test-pfp.jpg' } });
         });
     });
 });

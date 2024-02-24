@@ -1,1 +1,0 @@
--set correct profile picture from azure on the backend for the user payload in AuthContext
