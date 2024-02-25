@@ -268,6 +268,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/posts:
+    post:
+      summary: Creates a new post
+      security:
+        - JwtAuth: []
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: content
+          in: formData
+          required: true
+          type: string
+        - name: images
+          in: formData
+          required: false
+          type: array
+          items:
+            type: file
+        - name: video
+          in: formData
+          required: false
+          type: file
+        - name: poll
+          in: formData
+          required: false
+          type: string
+      responses:
+        201:
+          description: Post was created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Post"
+        401:
+          description: Token incorrect or user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+
+      
 
 
 definitions:
@@ -292,3 +339,64 @@ definitions:
         type: string
       hasChannel:
         type: boolean
+  Post:
+    type: object
+    properties:
+      id:
+        type: string
+      content:
+        type: string
+      videoPath:
+        type: string
+        nullable: true
+      userId:
+        type: string
+      images:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            path:
+              type: string
+            postId:
+              type: string
+            createdAt:
+              type: string
+      poll:
+        type: object
+        properties:
+          id:
+            type: string
+          postId:
+            type: string
+          options:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                label:
+                  type: string
+                pollId:
+                  type: string
+                votes:
+                  type: array
+          createdAt:
+            type: string
+        nullable: true
+      user:
+        type: object
+        properties:
+          id:
+            type: string
+          username:
+            type: string
+          slug:
+            type: string
+          avatar:
+            type: string
+      createdAt:
+        type: string

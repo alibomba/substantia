@@ -1,4 +1,4 @@
-import { RefreshToken, User } from "@prisma/client";
+import { Post, PostPoll, RefreshToken, User } from "@prisma/client";
 import { vi } from "vitest";
 import UserService from "../services/UserService";
 import AuthService from "../services/AuthService";
@@ -7,6 +7,8 @@ import GoogleService from "../services/GoogleService";
 import { TokenPayload } from "google-auth-library";
 import EmailService from "../services/EmailService";
 import AzureService from "../services/AzureService";
+import PostService from "../services/PostService";
+import * as utils from '../utils';
 
 export const mockUser: User = {
     id: '123',
@@ -87,3 +89,39 @@ export const mockVerifyPasswordResetToken = vi.spyOn(AuthService, 'verifyPasswor
 export const mockUpdateUserPassword = vi.spyOn(UserService, 'updateUserPassword');
 
 export const mockGetAzureObject = vi.spyOn(AzureService, 'getAzureObject');
+
+export const mockPostAzureObject = vi.spyOn(AzureService, 'postAzureObject');
+
+export const mockCreatePost = vi.spyOn(PostService, 'createPost');
+
+export const mockContentOnlyPost: Post = {
+    id: '123',
+    videoPath: null,
+    content: 'test content',
+    userId: '123',
+    createdAt: new Date()
+}
+
+export const mockWithVideoPost: Post = {
+    id: '123',
+    videoPath: 'uuid',
+    content: 'test content',
+    userId: '123',
+    createdAt: new Date()
+}
+
+export const mockGetPost = vi.spyOn(PostService, 'getPost');
+
+export const mockGenerateUniqueId = vi.spyOn(utils, 'generateUniqueId');
+
+export const mockCreatePostImage = vi.spyOn(PostService, 'createPostImage');
+
+export const mockCreatePostPoll = vi.spyOn(PostService, 'createPostPoll');
+
+export const mockPostPoll: PostPoll = {
+    id: '123',
+    postId: '123',
+    createdAt: new Date()
+}
+
+export const mockCreatePostPollOption = vi.spyOn(PostService, 'createPostPollOption');
