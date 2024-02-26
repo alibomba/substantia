@@ -313,7 +313,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
-
+  /api/search:
+    get:
+      summary: Search profiles by phrase
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: phrase
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Empty array or array of profiles is returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  avatar:
+                    type: string
+                    nullable: true
+                  username:
+                    type: string
+                  slug:
+                    type: string
+                  description:
+                    type: string
+        401:
+          description: Token incorrect or user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: No phrase was given
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
       
 
 

@@ -1,4 +1,5 @@
 import prisma from "../models/prisma";
+import AzureService from "./AzureService";
 
 
 class UserService {
@@ -44,6 +45,38 @@ class UserService {
 
     public async updateUserPassword(id: string, password: string) {
         return await prisma.user.update({ where: { id }, data: { password } });
+    }
+
+    public async getProfilesByPhrase(phrase: string) {
+        const profiles = await prisma.user.findMany({
+            where: {
+                OR: [
+                    {
+                        username: { contains: phrase }
+                    },
+                    {
+                        slug: { contains: phrase }
+                    },
+                    {
+                        description: { contains: phrase }
+                    }
+                ],
+                hasChannel: true
+            },
+            select: {
+                id: true,
+                avatar: true,
+                username: true,
+                slug: true,
+                description: true
+            }
+        });
+        return await Promise.all(profiles.map(async profile => {
+            if (profile.avatar) {
+                profile.avatar = await AzureService.getAzureObject(`pfp/${profile.avatar}`);
+            }
+            return profile;
+        }));
     }
 }
 

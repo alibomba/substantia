@@ -125,3 +125,5 @@ export const mockPostPoll: PostPoll = {
 }
 
 export const mockCreatePostPollOption = vi.spyOn(PostService, 'createPostPollOption');
+
+export const mockGetProfilesByPhrase = vi.spyOn(UserService, 'getProfilesByPhrase');

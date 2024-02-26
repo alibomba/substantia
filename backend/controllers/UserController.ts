@@ -24,6 +24,13 @@ class UserController {
             res.sendStatus(500);
         }
     }
+
+    public async profileSearch(req: Request, res: Response) {
+        const { phrase } = req.query;
+        if (!phrase) return res.status(422).json({ message: 'Fraza jest wymagana' });
+        const profiles = await UserService.getProfilesByPhrase(phrase as string);
+        res.json(profiles);
+    }
 }
 
 export default new UserController();
