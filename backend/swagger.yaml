@@ -354,6 +354,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/create-channel:
+    post:
+      summary: Create channel for the logged in user
+      security:
+        - JwtAuth: []
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: banner
+          in: formData
+          required: true
+          type: file
+        - name: profileVideo
+          in: formData
+          required: true
+          type: file
+        - name: description
+          in: formData
+          required: true
+          type: string
+        - name: subscriptionPrice
+          in: formData
+          required: true
+          type: string
+      responses:
+        204:
+          description: Channel created successfully
+        401:
+          description: Token incorrect or user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
       
 
 

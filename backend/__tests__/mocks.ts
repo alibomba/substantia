@@ -9,6 +9,8 @@ import EmailService from "../services/EmailService";
 import AzureService from "../services/AzureService";
 import PostService from "../services/PostService";
 import * as utils from '../utils';
+import FileService from "../services/FileService";
+import StripeService from "../services/StripeService";
 
 export const mockUser: User = {
     id: '123',
@@ -18,6 +20,8 @@ export const mockUser: User = {
     password: 'hashedPassword',
     oAuth: false,
     hasChannel: false,
+    stripeChannelPlanID: null,
+    stripeCustomerID: null,
     subscriptionPrice: null,
     avatar: null,
     banner: null,
@@ -69,6 +73,8 @@ export const mockOAuthUser: User = {
     password: null,
     oAuth: true,
     hasChannel: false,
+    stripeChannelPlanID: null,
+    stripeCustomerID: null,
     subscriptionPrice: null,
     avatar: null,
     banner: null,
@@ -127,3 +133,9 @@ export const mockPostPoll: PostPoll = {
 export const mockCreatePostPollOption = vi.spyOn(PostService, 'createPostPollOption');
 
 export const mockGetProfilesByPhrase = vi.spyOn(UserService, 'getProfilesByPhrase');
+
+export const mockValidateBannerAspectRatio = vi.spyOn(FileService, 'validateBannerAspectRatio');
+
+export const mockCreateStripeProduct = vi.spyOn(StripeService, 'createStripeProduct');
+
+export const mockCreateChannel = vi.spyOn(UserService, 'createChannel');

@@ -23,28 +23,30 @@ model RefreshToken {
 }
 
 model User {
-  id                String           @id @default(uuid())
-  email             String           @unique @db.VarChar(20)
-  username          String           @db.VarChar(20)
-  slug              String           @unique @db.VarChar(20)
-  password          String?
-  oAuth             Boolean
-  hasChannel        Boolean          @default(false)
-  subscriptionPrice Float?
-  avatar            String?
-  banner            String?
-  profileVideo      String?
-  facebook          String?
-  instagram         String?
-  twitter           String?
-  description       String?
-  bookmarks         Bookmark[]
-  postLikes         PostLike[]
-  commentLikes      CommentLike[]
-  replyLikes        ReplyLike[]
-  pollVotes         PostPollOption[]
-  posts             Post[]
-  createdAt         DateTime         @default(now())
+  id                  String           @id @default(uuid())
+  email               String           @unique @db.VarChar(20)
+  username            String           @db.VarChar(20)
+  slug                String           @unique @db.VarChar(20)
+  password            String?
+  oAuth               Boolean
+  hasChannel          Boolean          @default(false)
+  stripeChannelPlanID String?
+  stripeCustomerID    String?
+  subscriptionPrice   Int?
+  avatar              String?
+  banner              String?
+  profileVideo        String?
+  facebook            String?
+  instagram           String?
+  twitter             String?
+  description         String?
+  bookmarks           Bookmark[]
+  postLikes           PostLike[]
+  commentLikes        CommentLike[]
+  replyLikes          ReplyLike[]
+  pollVotes           PostPollOption[]
+  posts               Post[]
+  createdAt           DateTime         @default(now())
 }
 
 model Post {

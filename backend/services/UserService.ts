@@ -1,5 +1,7 @@
+import { Request } from "express";
 import prisma from "../models/prisma";
 import AzureService from "./AzureService";
+import FileService from "./FileService";
 
 
 class UserService {
@@ -77,6 +79,52 @@ class UserService {
             }
             return profile;
         }));
+    }
+
+    public async validateChannel(req: Request) {
+        const { description, subscriptionPrice } = req.body;
+        if (!description) throw new Error('Opis jest wymagany', { cause: 'VALIDATION' });
+        if (description.length > 200) throw new Error('Opis może mieć maksymalnie 200 znaków', { cause: 'VALIDATION' });
+        if (!subscriptionPrice) throw new Error('Cena subskrypcji jest wymagana', { cause: 'VALIDATION' });
+        const subscriptionPriceFloat = parseFloat(subscriptionPrice);
+        if (isNaN(subscriptionPriceFloat)) throw new Error('Podaj poprawną cenę subskrypcji', { cause: 'VALIDATION' });
+        if (subscriptionPriceFloat > 200) throw new Error('Maksymalna cena subskrypcji to 200zł', { cause: 'VALIDATION' });
+        const subscriptionPriceInCents = parseInt((subscriptionPriceFloat * 100).toFixed(0));
+
+        let banner;
+        if (req.files && typeof req.files === 'object' && 'banner' in req.files) {
+            banner = req.files['banner'][0];
+        }
+        if (!banner) throw new Error('Banner jest wymagany', { cause: 'VALIDATION' });
+        if (banner.size > 7 * 1024 * 1024) throw new Error('Banner może mieć maksymalnie 7MB', { cause: 'VALIDATION' });
+        if (!await FileService.validateBannerAspectRatio(banner.buffer)) throw new Error('Banner musi mieć współczynnik proporcji 5:1', { cause: 'VALIDATION' });
+
+        let profileVideo;
+        if (req.files && typeof req.files === 'object' && 'profileVideo' in req.files) {
+            profileVideo = req.files['profileVideo'][0];
+        }
+        if (!profileVideo) throw new Error('Filmik profilowy jest wymagany', { cause: 'VALIDATION' });
+        if (profileVideo.size > 100 * 1024 * 1024) throw new Error('Filmik profilowy może mieć maksymalnie 100MB', { cause: 'VALIDATION' });
+        return {
+            banner,
+            profileVideo,
+            description,
+            subscriptionPriceInCents
+        }
+    }
+
+    public async createChannel(userId: string, banner: string, profileVideo: string, description: string, stripeProductID: string, subscriptionPrice: number) {
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                hasChannel: true,
+                banner,
+                profileVideo,
+                description,
+                stripeChannelPlanID: stripeProductID,
+                subscriptionPrice
+            }
+        });
     }
 }
 
