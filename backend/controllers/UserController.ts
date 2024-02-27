@@ -102,6 +102,21 @@ class UserController {
             }
         });
     }
+
+    public async subscribe(req: Request, res: Response) {
+        const { user } = req.body;
+        const { id } = req.params;
+        const planID = await UserService.getUserPlanID(id);
+        if (!planID) return res.status(404).json({ message: 'Użytkownik nie posiada kanału' });
+        const customerID = await UserService.getUserCustomerID(user.id);
+        let customer;
+        if (customerID) customer = customerID;
+        else {
+            customer = await StripeService.createStripeCustomer(user.id);
+        }
+        const checkoutURL = await StripeService.createStripeCheckout(customer, planID, id);
+        res.json({ url: checkoutURL });
+    }
 }
 
 export default new UserController();

@@ -126,6 +126,16 @@ class UserService {
             }
         });
     }
+
+    public async getUserPlanID(id: string) {
+        const user = await prisma.user.findUnique({ where: { id }, select: { stripeChannelPlanID: true } });
+        return user?.stripeChannelPlanID;
+    }
+
+    public async getUserCustomerID(id: string) {
+        const user = await prisma.user.findUnique({ where: { id }, select: { stripeCustomerID: true } });
+        return user?.stripeCustomerID;
+    }
 }
 
 export default new UserService();

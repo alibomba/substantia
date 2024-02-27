@@ -320,7 +320,7 @@ paths:
         - JwtAuth: []
       parameters:
         - name: phrase
-          in: path
+          in: query
           required: true
           type: string
       responses:
@@ -383,6 +383,38 @@ paths:
           description: Channel created successfully
         401:
           description: Token incorrect or user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/subscribe/{id}:
+    post:
+      summary: Get Stripe checkout session url to subscribe to the given user
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Stripe checkout session url was generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+        404:
+          description: Given user does not exist or does not have a channel
           content:
             application/json:
               schema:

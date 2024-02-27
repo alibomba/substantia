@@ -139,3 +139,11 @@ export const mockValidateBannerAspectRatio = vi.spyOn(FileService, 'validateBann
 export const mockCreateStripeProduct = vi.spyOn(StripeService, 'createStripeProduct');
 
 export const mockCreateChannel = vi.spyOn(UserService, 'createChannel');
+
+export const mockGetUserPlanID = vi.spyOn(UserService, 'getUserPlanID');
+
+export const mockGetUserCustomerID = vi.spyOn(UserService, 'getUserCustomerID');
+
+export const mockCreateStripeCustomer = vi.spyOn(StripeService, 'createStripeCustomer');
+
+export const mockCreateStripeCheckout = vi.spyOn(StripeService, 'createStripeCheckout');
