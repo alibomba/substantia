@@ -14,9 +14,23 @@ describe('POST /posts', () => {
         jwtMiddlewareTest('POST', '/api/posts');
     });
 
+    describe('user does not have a channel', () => {
+        it('returns 403 status and a message', async () => {
+            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockFindUserByEmail.mockResolvedValueOnce(mockUser);
+
+            const { statusCode, body } = await supertest(app)
+                .post('/api/posts')
+                .set('Authorization', 'Bearer token');
+
+            expect(statusCode).toBe(403);
+            expect(body.message).toBe('Nie możesz publikować postów bez kanału');
+        });
+    });
+
     describe('invalid text fields given', () => {
         it('returns 422 status and a message', async () => {
-            mockVerifyToken.mockResolvedValue(mockPayload);
+            mockVerifyToken.mockResolvedValue({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValue(mockUser);
             const invalidData = [
                 { content: '' },
@@ -41,7 +55,7 @@ describe('POST /posts', () => {
 
     describe('image field is too big', () => {
         it('returns 422 status and a message', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
 
             const { statusCode, body } = await supertest(app)
@@ -58,7 +72,7 @@ describe('POST /posts', () => {
 
     describe('one of image fields is too big', () => {
         it('returns 422 status and a message', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
 
             const { statusCode, body } = await supertest(app)
@@ -76,7 +90,7 @@ describe('POST /posts', () => {
 
     describe('both images and video given', () => {
         it('returns 422 status and a message', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
 
             const { statusCode, body } = await supertest(app)
@@ -94,7 +108,7 @@ describe('POST /posts', () => {
 
     describe('post only with content given', () => {
         it('creates a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
 
@@ -107,7 +121,7 @@ describe('POST /posts', () => {
         });
 
         it('returns 201 status and a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             const mockNewPost = {
@@ -139,7 +153,7 @@ describe('POST /posts', () => {
 
     describe('post with one image given', () => {
         it('creates a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockPostAzureObject.mockResolvedValueOnce(expect.any(Object));
@@ -154,7 +168,7 @@ describe('POST /posts', () => {
         });
 
         it('creates the image in the DB', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockPostAzureObject.mockResolvedValueOnce(expect.any(Object));
@@ -170,7 +184,7 @@ describe('POST /posts', () => {
         });
 
         it('posts the image to the azure blob storage', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockPostAzureObject.mockResolvedValueOnce(expect.any(Object));
@@ -186,7 +200,7 @@ describe('POST /posts', () => {
         });
 
         it('returns 201 status and a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockPostAzureObject.mockResolvedValueOnce(expect.any(Object));
@@ -236,7 +250,7 @@ describe('POST /posts', () => {
 
     describe('post with multiple images given', () => {
         it('creates a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockPostAzureObject.mockResolvedValue(expect.any(Object));
@@ -252,7 +266,7 @@ describe('POST /posts', () => {
         });
 
         it('creates the images in the DB', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockPostAzureObject.mockResolvedValue(expect.any(Object));
@@ -270,7 +284,7 @@ describe('POST /posts', () => {
         });
 
         it('posts the images to the azure blob storage', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockPostAzureObject.mockResolvedValue(expect.any(Object));
@@ -288,7 +302,7 @@ describe('POST /posts', () => {
         });
 
         it('returns 201 status and a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockPostAzureObject.mockResolvedValue(expect.any(Object));
@@ -339,7 +353,7 @@ describe('POST /posts', () => {
 
     describe('post with a video given', () => {
         it('posts a video to the azure blob storage', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockGenerateUniqueId.mockReturnValueOnce('uuid');
             mockPostAzureObject.mockResolvedValueOnce(expect.any(Object));
@@ -355,7 +369,7 @@ describe('POST /posts', () => {
         });
 
         it('creates a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockGenerateUniqueId.mockReturnValueOnce('uuid');
             mockPostAzureObject.mockResolvedValueOnce(expect.any(Object));
@@ -371,7 +385,7 @@ describe('POST /posts', () => {
         });
 
         it('returns 201 status and a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockGenerateUniqueId.mockReturnValueOnce('uuid');
             mockPostAzureObject.mockResolvedValueOnce(expect.any(Object));
@@ -406,7 +420,7 @@ describe('POST /posts', () => {
 
     describe('post with a poll given', () => {
         it('creates a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockCreatePostPoll.mockResolvedValueOnce(mockPostPoll);
@@ -420,7 +434,7 @@ describe('POST /posts', () => {
         });
 
         it('creates a new poll', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockCreatePostPoll.mockResolvedValueOnce(mockPostPoll);
@@ -434,7 +448,7 @@ describe('POST /posts', () => {
         });
 
         it('creates all new poll options', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockCreatePostPoll.mockResolvedValueOnce(mockPostPoll);
@@ -453,7 +467,7 @@ describe('POST /posts', () => {
         });
 
         it('returns 201 status and a new post', async () => {
-            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockVerifyToken.mockResolvedValueOnce({ ...mockPayload, hasChannel: true });
             mockFindUserByEmail.mockResolvedValueOnce(mockUser);
             mockCreatePost.mockResolvedValueOnce(mockContentOnlyPost);
             mockCreatePostPoll.mockResolvedValueOnce(mockPostPoll);

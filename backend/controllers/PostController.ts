@@ -9,6 +9,7 @@ import { generateUniqueId } from '../utils';
 class PostController {
     public async createPost(req: Request, res: Response) {
         const { user } = req.body;
+        if (!user.hasChannel) return res.status(403).json({ message: 'Nie możesz publikować postów bez kanału' });
         postUpload(req, res, async err => {
             if (err) {
                 if (err instanceof MulterError) {

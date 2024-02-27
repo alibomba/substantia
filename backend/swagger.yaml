@@ -307,6 +307,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+        403:
+          description: User does not have a channel
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
         422:
           description: Validation error
           content:

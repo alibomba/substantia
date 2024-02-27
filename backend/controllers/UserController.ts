@@ -117,6 +117,10 @@ class UserController {
         const checkoutURL = await StripeService.createStripeCheckout(customer, planID, id);
         res.json({ url: checkoutURL });
     }
+
+    public async getProfilePreview(req: Request, res: Response) {
+
+    }
 }
 
 export default new UserController();
