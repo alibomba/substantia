@@ -6,6 +6,7 @@ import { MulterError } from 'multer';
 import { generateUniqueId } from '../utils';
 import AzureService from '../services/AzureService';
 import StripeService from '../services/StripeService';
+import { User } from '@prisma/client';
 
 class UserController {
     public async register(req: Request, res: Response) {
@@ -118,8 +119,24 @@ class UserController {
         res.json({ url: checkoutURL });
     }
 
-    public async getProfilePreview(req: Request, res: Response) {
-
+    public async profilePreview(req: Request, res: Response) {
+        const { user: userPayload } = req.body;
+        const { id } = req.params;
+        const planID = await UserService.getUserPlanID(id);
+        if (!planID) return res.status(404).json({ message: 'Użytkownik nie posiada kanału' });
+        let access: boolean;
+        if (!userPayload) access = false;
+        else {
+            const user = await UserService.findUserByEmail(userPayload.email) as User;
+            if (!user.stripeCustomerID) access = false;
+            else access = await StripeService.isSubscribed(user.stripeCustomerID, planID);
+        }
+        const profile = await UserService.getProfilePreview(id);
+        if (!profile) return res.status(404).json({ message: 'Użytkownik nie istnieje' });
+        profile.banner = await AzureService.getAzureObject(`banners/${profile.banner}`);
+        if (!access) profile.profileVideo = await AzureService.getAzureObject(`profileVideos/${profile.profileVideo}`);
+        if (profile.avatar) profile.avatar = await AzureService.getAzureObject(`pfp/${profile.avatar}`);
+        res.json({ profile, isSubscribed: access });
     }
 }
 

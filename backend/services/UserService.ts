@@ -136,6 +136,24 @@ class UserService {
         const user = await prisma.user.findUnique({ where: { id }, select: { stripeCustomerID: true } });
         return user?.stripeCustomerID;
     }
+
+    public async getProfilePreview(id: string) {
+        return await prisma.user.findUnique({
+            where: { id }, select: {
+                id: true,
+                banner: true,
+                avatar: true,
+                facebook: true,
+                instagram: true,
+                twitter: true,
+                username: true,
+                slug: true,
+                description: true,
+                subscriptionPrice: true,
+                profileVideo: true
+            }
+        });
+    }
 }
 
 export default new UserService();

@@ -431,7 +431,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
-      
+  /api/profile-preview/{id}:
+    get:
+      summary: Get profile preview of a given user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Profile preview is returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile:
+                    $ref: "#/definitions/ProfilePreview"
+                  isSubscribed:
+                    type: boolean
+        404:
+          description: Profile was not found or a given user does not have a channel
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
 
 
 definitions:
@@ -516,4 +541,33 @@ definitions:
           avatar:
             type: string
       createdAt:
+        type: string
+  ProfilePreview:
+    type: object
+    properties:
+      id:
+        type: string
+      banner:
+        type: string
+      avatar:
+        type: string
+        nullable: true
+      facebook:
+        type: string
+        nullable: true
+      instagram:
+        type: string
+        nullable: true
+      twitter:
+        type: string
+        nullable: true
+      username:
+        type: string
+      slug:
+        type: string
+      description:
+        type: string
+      subscriptionPrice:
+        type: number
+      profileVideo:
         type: string
