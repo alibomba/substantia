@@ -38,7 +38,7 @@ const HeaderDropdown = ({ setState }: Props) => {
     }
 
     return (
-        <div className="absolute right-0 top-[110%] bg-white flex flex-col items-center gap-3 text-2xl font-medium p-4 pt-5 border-2 border-black rounded-2xl shadow-xl">
+        <div className="absolute z-[1000] right-0 top-[110%] bg-white flex flex-col items-center gap-3 text-2xl font-medium p-4 pt-5 border-2 border-black rounded-2xl shadow-xl">
             <Link to={`/profil/${payload.id}`}>Mój profil</Link>
             <Link to='/zapisane'>Zapisane</Link>
             <Link to='/ustawienia'>Ustawienia</Link>
