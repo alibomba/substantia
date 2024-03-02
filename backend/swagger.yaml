@@ -401,7 +401,7 @@ paths:
                 $ref: "#/definitions/Error"
   /api/subscribe/{id}:
     post:
-      summary: Get Stripe checkout session url to subscribe to the given user
+      summary: Get Stripe checkout session url to subscribe to the given profile
       security:
         - JwtAuth: []
       parameters:
@@ -419,6 +419,12 @@ paths:
                 properties:
                   url:
                     type: string
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
         404:
           description: Given user does not exist or does not have a channel
           content:
@@ -457,7 +463,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
-
+  /api/unsubscribe/{id}:
+    delete:
+      summary: Unsubscribe the given profile
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        204:
+          description: Unsubscribed successfully
+        404:
+          description: Given user does not exist or does not have a channel
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        
 
 definitions:
   Error:

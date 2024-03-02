@@ -53,6 +53,17 @@ class StripeService {
         });
         return subscriptions.data.length > 0;
     }
+
+    public async deleteSubscription(customerID: string, planID: string) {
+        const stripe = this.getStripeInstance();
+        const subscriptions = await stripe.subscriptions.list({
+            customer: customerID,
+            plan: planID,
+            status: 'active'
+        });
+        const subscriptionID = subscriptions.data[0].id;
+        await stripe.subscriptions.cancel(subscriptionID);
+    }
 }
 
 export default new StripeService();

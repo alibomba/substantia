@@ -107,16 +107,39 @@ class UserController {
     public async subscribe(req: Request, res: Response) {
         const { user } = req.body;
         const { id } = req.params;
+        if (user.id === id) return res.status(422).json({ message: 'Nie możesz subskrybować samego siebie' });
         const planID = await UserService.getUserPlanID(id);
         if (!planID) return res.status(404).json({ message: 'Użytkownik nie posiada kanału' });
         const customerID = await UserService.getUserCustomerID(user.id);
         let customer;
-        if (customerID) customer = customerID;
+        if (customerID) {
+            const isSubscribed = await StripeService.isSubscribed(customerID, planID);
+            if (isSubscribed) return res.status(422).json({ message: 'Subskrybujesz już ten profil' });
+            customer = customerID;
+        }
         else {
             customer = await StripeService.createStripeCustomer(user.id);
         }
         const checkoutURL = await StripeService.createStripeCheckout(customer, planID, id);
         res.json({ url: checkoutURL });
+    }
+
+    public async unsubscribe(req: Request, res: Response) {
+        const { user } = req.body;
+        const { id } = req.params;
+        if (user.id === id) return res.status(422).json({ message: 'Nie możesz subskrybować samego siebie' });
+        const planID = await UserService.getUserPlanID(id);
+        if (!planID) return res.status(404).json({ message: 'Użytkownik nie posiada kanału' });
+        const customerID = await UserService.getUserCustomerID(user.id);
+        if (customerID) {
+            const isSubscribed = await StripeService.isSubscribed(customerID, planID);
+            if (!isSubscribed) return res.status(422).json({ message: 'Nie subskrybujesz tego profilu' });
+        }
+        else {
+            return res.status(422).json({ message: 'Nie subskrybujesz tego profilu' });
+        }
+        await StripeService.deleteSubscription(customerID, planID);
+        res.sendStatus(204);
     }
 
     public async profilePreview(req: Request, res: Response) {

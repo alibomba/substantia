@@ -151,3 +151,5 @@ export const mockCreateStripeCheckout = vi.spyOn(StripeService, 'createStripeChe
 export const mockGetProfilePreview = vi.spyOn(UserService, 'getProfilePreview');
 
 export const mockIsSubscribed = vi.spyOn(StripeService, 'isSubscribed');
+
+export const mockDeleteSubscription = vi.spyOn(StripeService, 'deleteSubscription');

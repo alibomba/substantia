@@ -7,3 +7,5 @@ export { default as HomeSection } from './homeSection/HomeSection';
 export { default as Qualities } from './qualities/Qualities';
 export { default as Statistics } from './statistics/Statistics';
 export { default as Footer } from './footer/Footer';
+export { default as ProfileHeader } from './profileHeader/ProfileHeader';
+export { default as UserPosts } from './userPosts/UserPosts';
