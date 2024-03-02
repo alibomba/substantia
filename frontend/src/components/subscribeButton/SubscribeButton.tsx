@@ -29,7 +29,7 @@ const SubscribeButton = ({ id, isSubscribed, setIsSubscribed, subscriptionPrice 
                     method: 'post',
                     url: `/subscribe/${id}`
                 });
-                window.location = data.url;
+                window.location.assign(data.url);
             } catch (err) {
                 setError(true);
             }

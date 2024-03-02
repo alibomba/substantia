@@ -64,6 +64,15 @@ class StripeService {
         const subscriptionID = subscriptions.data[0].id;
         await stripe.subscriptions.cancel(subscriptionID);
     }
+
+    public async profileSubscriptionCount(planID: string) {
+        const stripe = this.getStripeInstance();
+        const subscriptions = await stripe.subscriptions.list({
+            plan: planID,
+            status: 'active'
+        });
+        return subscriptions.data.length;
+    }
 }
 
 export default new StripeService();

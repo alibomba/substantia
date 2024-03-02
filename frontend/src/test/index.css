@@ -705,6 +705,10 @@ video {
   margin-left: 5.75em;
 }
 
+.mt-12{
+  margin-top: 3rem;
+}
+
 .mt-2{
   margin-top: 0.5rem;
 }
@@ -819,6 +823,10 @@ video {
 
 .w-\[45em\]{
   width: 45em;
+}
+
+.w-\[80\%\]{
+  width: 80%;
 }
 
 .w-\[85px\]{
@@ -1488,6 +1496,10 @@ body {
     margin-top: 0.5rem;
   }
 
+  .max-sm\:mt-6{
+    margin-top: 1.5rem;
+  }
+
   .max-sm\:h-\[18rem\]{
     height: 18rem;
   }
@@ -1695,6 +1707,22 @@ body {
   .max-\[460px\]\:text-xl{
     font-size: 1.25rem;
     line-height: 1.75rem;
+  }
+}
+
+@media (max-width: 450px){
+  .max-\[450px\]\:rounded-xl{
+    border-radius: 0.75rem;
+  }
+
+  .max-\[450px\]\:px-3{
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .max-\[450px\]\:text-4xl{
+    font-size: 2.25rem;
+    line-height: 2.5rem;
   }
 }
 

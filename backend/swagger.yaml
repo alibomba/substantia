@@ -494,6 +494,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/profile-stats/{id}:
+    get:
+      summary: Get profile's posts, likes and subscription counts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Stats were retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: string
+                  likes:
+                    type: string
+                  subscriptions:
+                    type: string
+        404:
+          description: Given user does not exist or does not have a channel
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
         
 
 definitions:

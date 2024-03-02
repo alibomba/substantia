@@ -154,6 +154,14 @@ class UserService {
             }
         });
     }
+
+    public async getProfileStats(id: string) {
+        const profile = await prisma.user.findUnique({ where: { id }, select: { hasChannel: true, posts: { select: { likes: true } } } });
+        if (!profile || !profile.hasChannel) return null;
+        const posts = profile.posts.length;
+        const likes = profile.posts.reduce((total, post) => total + post.likes.length, 0);
+        return { posts, likes };
+    }
 }
 
 export default new UserService();

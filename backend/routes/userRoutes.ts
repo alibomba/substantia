@@ -11,5 +11,6 @@ router.post('/create-channel', jwtAuthentication, UserController.createChannel);
 router.post('/subscribe/:id', jwtAuthentication, UserController.subscribe);
 router.delete('/unsubscribe/:id', jwtAuthentication, UserController.unsubscribe);
 router.get('/profile-preview/:id', optionalJwtAuthentication, UserController.profilePreview);
+router.get('/profile-stats/:id', UserController.profileStats);
 
 export default router;

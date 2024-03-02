@@ -7,6 +7,7 @@ import { generateUniqueId } from '../utils';
 import AzureService from '../services/AzureService';
 import StripeService from '../services/StripeService';
 import { User } from '@prisma/client';
+import formatStatsNumber from '../utils/formatStatsNumber';
 
 class UserController {
     public async register(req: Request, res: Response) {
@@ -160,6 +161,20 @@ class UserController {
         if (!access) profile.profileVideo = await AzureService.getAzureObject(`profileVideos/${profile.profileVideo}`);
         if (profile.avatar) profile.avatar = await AzureService.getAzureObject(`pfp/${profile.avatar}`);
         res.json({ profile, isSubscribed: access });
+    }
+
+    public async profileStats(req: Request, res: Response) {
+        const { id } = req.params;
+        const stats = await UserService.getProfileStats(id);
+        const planID = await UserService.getUserPlanID(id);
+        if (!stats || !planID) return res.status(404).json({ message: 'Użytkownik nie posiada kanału' });
+        const subscriptions = await StripeService.profileSubscriptionCount(planID);
+        const response = {
+            posts: formatStatsNumber(stats.posts),
+            likes: formatStatsNumber(stats.likes),
+            subscriptions: formatStatsNumber(subscriptions)
+        }
+        res.json(response);
     }
 }
 
