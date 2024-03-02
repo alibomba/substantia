@@ -159,3 +159,5 @@ export const mockGetProfileStats = vi.spyOn(UserService, 'getProfileStats');
 export const mockProfileSubscriptionCount = vi.spyOn(StripeService, 'profileSubscriptionCount');
 
 export const mockUpdateAvatar = vi.spyOn(UserService, 'updateAvatar');
+
+export const mockUpdateBanner = vi.spyOn(UserService, 'updateBanner');

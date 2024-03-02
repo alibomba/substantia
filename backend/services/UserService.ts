@@ -166,6 +166,10 @@ class UserService {
     public async updateAvatar(id: string, path: string) {
         return await prisma.user.update({ where: { id }, data: { avatar: path } });
     }
+
+    public async updateBanner(id: string, path: string) {
+        return await prisma.user.update({ where: { id }, data: { banner: path } });
+    }
 }
 
 export default new UserService();

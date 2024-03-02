@@ -9,6 +9,8 @@ import StripeService from '../services/StripeService';
 import { User } from '@prisma/client';
 import formatStatsNumber from '../utils/formatStatsNumber';
 import avatarUpload from '../middleware/avatarUpload';
+import bannerUpload from '../middleware/bannerUpload';
+import FileService from '../services/FileService';
 
 class UserController {
     public async register(req: Request, res: Response) {
@@ -207,6 +209,42 @@ class UserController {
             const path = generateUniqueId();
             await AzureService.postAzureObject(avatar.buffer, `pfp/${path}`, avatar.mimetype);
             await UserService.updateAvatar(user.id, path);
+            res.sendStatus(204);
+        });
+    }
+
+    public async updateBanner(req: Request, res: Response) {
+        const { user } = req.body;
+        const planID = await UserService.getUserPlanID(user.id);
+        if (!planID) return res.status(403).json({ message: 'Nie posiadasz kanału' });
+        bannerUpload(req, res, async err => {
+            if (err) {
+                if (err instanceof MulterError) {
+                    if (err.code === 'LIMIT_FILE_SIZE') {
+                        return res.status(422).json({ message: 'Banner może mieć maksymalnie 7MB' });
+                    }
+                    else if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+                        return res.status(422).json({ message: 'Banner musi być obrazem' });
+                    }
+                    else {
+                        return res.sendStatus(500);
+                    }
+                }
+                else {
+                    return res.sendStatus(500);
+                }
+            }
+
+            let banner;
+            if (req.files && typeof req.files === 'object' && 'banner' in req.files) {
+                banner = req.files['banner'][0];
+            }
+            if (!banner) return res.status(422).json({ message: 'Banner jest wymagany' });
+            if (!await FileService.validateBannerAspectRatio(banner.buffer)) return res.status(422).json({ message: 'Banner musi mieć współczynnik proporcji 5:1' });
+
+            const path = generateUniqueId();
+            await AzureService.postAzureObject(banner.buffer, `banners/${path}`, banner.mimetype);
+            await UserService.updateBanner(user.id, path);
             res.sendStatus(204);
         });
     }

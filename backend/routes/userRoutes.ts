@@ -13,5 +13,6 @@ router.delete('/unsubscribe/:id', jwtAuthentication, UserController.unsubscribe)
 router.get('/profile-preview/:id', optionalJwtAuthentication, UserController.profilePreview);
 router.get('/profile-stats/:id', UserController.profileStats);
 router.put('/update-avatar', jwtAuthentication, UserController.updateAvatar);
+router.put('/update-banner', jwtAuthentication, UserController.updateBanner);
 
 export default router;

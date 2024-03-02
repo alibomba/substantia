@@ -549,6 +549,39 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/update-banner:
+    put:
+      summary: Update user's banner
+      security:
+        - JwtAuth: []
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: banner
+          in: formData
+          required: true
+          type: file
+      responses:
+        204:
+          description: Banner was updated successfully
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User has no channel
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
         
 
 definitions:
