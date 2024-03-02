@@ -522,6 +522,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/update-avatar:
+    put:
+      summary: Update user's avatar
+      security:
+        - JwtAuth: []
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: avatar
+          in: formData
+          required: true
+          type: file
+      responses:
+        204:
+          description: Avatar was updated successfully
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
         
 
 definitions:

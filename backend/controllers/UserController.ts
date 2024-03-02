@@ -8,6 +8,7 @@ import AzureService from '../services/AzureService';
 import StripeService from '../services/StripeService';
 import { User } from '@prisma/client';
 import formatStatsNumber from '../utils/formatStatsNumber';
+import avatarUpload from '../middleware/avatarUpload';
 
 class UserController {
     public async register(req: Request, res: Response) {
@@ -175,6 +176,39 @@ class UserController {
             subscriptions: formatStatsNumber(subscriptions)
         }
         res.json(response);
+    }
+
+    public async updateAvatar(req: Request, res: Response) {
+        const { user } = req.body;
+        avatarUpload(req, res, async err => {
+            if (err) {
+                if (err instanceof MulterError) {
+                    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+                        return res.status(422).json({ message: 'Avatar musi być obrazem' });
+                    }
+                    else if (err.code === 'LIMIT_FILE_SIZE') {
+                        return res.status(422).json({ message: 'Avatar może mieć maksymalnie 4MB' });
+                    }
+                    else {
+                        return res.sendStatus(500);
+                    }
+                }
+                else {
+                    return res.sendStatus(500);
+                }
+            }
+
+            let avatar;
+            if (req.files && typeof req.files === 'object' && 'avatar' in req.files) {
+                avatar = req.files['avatar'][0];
+            }
+            if (!avatar) return res.status(422).json({ message: 'Avatar jest wymagany' });
+
+            const path = generateUniqueId();
+            await AzureService.postAzureObject(avatar.buffer, `pfp/${path}`, avatar.mimetype);
+            await UserService.updateAvatar(user.id, path);
+            res.sendStatus(204);
+        });
     }
 }
 

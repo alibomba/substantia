@@ -162,6 +162,10 @@ class UserService {
         const likes = profile.posts.reduce((total, post) => total + post.likes.length, 0);
         return { posts, likes };
     }
+
+    public async updateAvatar(id: string, path: string) {
+        return await prisma.user.update({ where: { id }, data: { avatar: path } });
+    }
 }
 
 export default new UserService();
