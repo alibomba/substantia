@@ -178,3 +178,7 @@ export const mockSettings = {
     description: 'test profile description',
     email: 'test@gmail.com'
 }
+
+export const mockValidateSettings = vi.spyOn(UserService, 'validateSettings');
+
+export const mockUpdateSettings = vi.spyOn(UserService, 'updateSettings');

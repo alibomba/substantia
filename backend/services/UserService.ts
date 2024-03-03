@@ -195,6 +195,49 @@ class UserService {
         if (settings.banner) settings.banner = await AzureService.getAzureObject(`banners/${settings.banner}`, 5);
         return settings;
     }
+
+    public async validateSettings(req: Request) {
+        const { username, slug, facebook, instagram, twitter, description, email, password } = req.body;
+        //first form
+        if (username || slug) {
+            if (!username) throw new Error('Nazwa użytkownika jest wymagana', { cause: 'VALIDATION' });
+            if (username.length > 20) throw new Error('Nazwa użytkownika może mieć maksymalnie 20 znaków', { cause: 'VALIDATION' });
+            if (!slug) throw new Error('Identyfikator jest wymagany', { cause: 'VALIDATION' });
+            if (slug.length > 20) throw new Error('Identyfikator może mieć maksymalnie 20 znaków', { cause: 'VALIDATION' });
+            const slugDuplicate = await this.findUserBySlug(slug);
+            if (slugDuplicate) throw new Error('Identyfikator jest już zajęty', { cause: 'VALIDATION' });
+        }
+        //socialmedia
+        if (facebook && facebook.length > 500) throw new Error('Facebook może mieć maksymalnie 500 znaków', { cause: 'VALIDATION' });
+        if (instagram && instagram.length > 500) throw new Error('Instagram może mieć maksymalnie 500 znaków', { cause: 'VALIDATION' });
+        if (twitter && twitter.length > 500) throw new Error('Twitter może mieć maksymalnie 500 znaków', { cause: 'VALIDATION' });
+        //second form
+        if (description && description.length > 200) throw new Error('Opis może mieć maksymalnie 200 znaków', { cause: 'VALIDATION' });
+        //third form
+        if (email) {
+            if (email.length > 20) throw new Error('Adres e-mail może mieć maksymalnie 200 znaków', { cause: 'VALIDATION' });
+            const emailDuplicate = await this.findUserByEmail(email);
+            if (emailDuplicate) throw new Error('Adres e-mail jest już zajęty', { cause: 'VALIDATION' });
+        }
+        //fourth form
+        if (password && (password.length < 8 || password.length > 60)) throw new Error('Hasło musi mieć pomiędzy 8 a 60 znaków', { cause: 'VALIDATION' });
+    }
+
+    public async updateSettings(id: string, req: Request, password: string | undefined) {
+        const { username, slug, facebook, instagram, twitter, description, email } = req.body;
+        return await prisma.user.update({
+            where: { id }, data: {
+                username: username && username,
+                slug: slug && slug,
+                facebook: facebook && facebook,
+                instagram: instagram && instagram,
+                twitter: twitter && twitter,
+                description: description && description,
+                email: email && email,
+                password: password && password
+            }
+        });
+    }
 }
 
 export default new UserService();

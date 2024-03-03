@@ -290,6 +290,25 @@ class UserController {
         const settings = await UserService.getUserSettings(user.id);
         res.json(settings);
     }
+
+    public async updateSettings(req: Request, res: Response) {
+        const { user, password } = req.body;
+        try {
+            await UserService.validateSettings(req);
+        } catch (exception) {
+            const error = exception as Error;
+            if (error.cause === 'VALIDATION') {
+                return res.status(422).json({ message: error.message });
+            }
+            else {
+                return res.sendStatus(500);
+            }
+        }
+        let passwordHash;
+        if (password) passwordHash = await AuthService.hashPassword(password);
+        await UserService.updateSettings(user.id, req, passwordHash);
+        res.sendStatus(204);
+    }
 }
 
 export default new UserController();

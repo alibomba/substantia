@@ -660,6 +660,59 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"  
+  /api/update-settings:
+    put:
+      summary: Update user's settings
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: username
+          in: body
+          required: false
+          type: string
+        - name: slug
+          in: body
+          required: false
+          type: string
+        - name: facebook
+          in: body
+          required: false
+          type: string
+        - name: instagram
+          in: body
+          required: false
+          type: string
+        - name: twitter
+          in: body
+          required: false
+          type: string
+        - name: description
+          in: body
+          required: false
+          type: string
+        - name: email
+          in: body
+          required: false
+          type: string
+        - name: password
+          in: body
+          required: false
+          type: string
+      responses:
+        204:
+          description: Settings were updated successfully
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
         
 
 definitions:
