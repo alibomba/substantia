@@ -174,6 +174,27 @@ class UserService {
     public async updateProfileVideo(id: string, path: string) {
         return await prisma.user.update({ where: { id }, data: { profileVideo: path } });
     }
+
+    public async getUserSettings(id: string) {
+        const settings = await prisma.user.findUnique({
+            where: { id }, select: {
+                avatar: true,
+                banner: true,
+                hasChannel: true,
+                username: true,
+                slug: true,
+                facebook: true,
+                instagram: true,
+                twitter: true,
+                description: true,
+                email: true
+            }
+        });
+        if (!settings) return null;
+        if (settings.avatar) settings.avatar = await AzureService.getAzureObject(`pfp/${settings.avatar}`, 5);
+        if (settings.banner) settings.banner = await AzureService.getAzureObject(`banners/${settings.banner}`, 5);
+        return settings;
+    }
 }
 
 export default new UserService();

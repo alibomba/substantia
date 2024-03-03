@@ -284,6 +284,12 @@ class UserController {
             res.sendStatus(204);
         });
     }
+
+    public async getMySettings(req: Request, res: Response) {
+        const { user } = req.body;
+        const settings = await UserService.getUserSettings(user.id);
+        res.json(settings);
+    }
 }
 
 export default new UserController();

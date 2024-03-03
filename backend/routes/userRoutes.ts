@@ -15,5 +15,6 @@ router.get('/profile-stats/:id', UserController.profileStats);
 router.put('/update-avatar', jwtAuthentication, UserController.updateAvatar);
 router.put('/update-banner', jwtAuthentication, UserController.updateBanner);
 router.put('/update-profile-video', jwtAuthentication, UserController.updateProfileVideo);
+router.get('/my-settings', jwtAuthentication, UserController.getMySettings);
 
 export default router;

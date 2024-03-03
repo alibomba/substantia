@@ -163,3 +163,18 @@ export const mockUpdateAvatar = vi.spyOn(UserService, 'updateAvatar');
 export const mockUpdateBanner = vi.spyOn(UserService, 'updateBanner');
 
 export const mockUpdateProfileVideo = vi.spyOn(UserService, 'updateProfileVideo');
+
+export const mockGetUserSettings = vi.spyOn(UserService, 'getUserSettings');
+
+export const mockSettings = {
+    avatar: 'https://azure.com/pfp.jpg',
+    banner: 'https://azure.com/banner.jpg',
+    hasChannel: true,
+    username: 'TestUser',
+    slug: 'testuser',
+    facebook: null,
+    instagram: '#',
+    twitter: '#',
+    description: 'test profile description',
+    email: 'test@gmail.com'
+}
