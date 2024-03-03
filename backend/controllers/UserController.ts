@@ -11,6 +11,7 @@ import formatStatsNumber from '../utils/formatStatsNumber';
 import avatarUpload from '../middleware/avatarUpload';
 import bannerUpload from '../middleware/bannerUpload';
 import FileService from '../services/FileService';
+import profileVideoUpload from '../middleware/profileVideoUpload';
 
 class UserController {
     public async register(req: Request, res: Response) {
@@ -245,6 +246,41 @@ class UserController {
             const path = generateUniqueId();
             await AzureService.postAzureObject(banner.buffer, `banners/${path}`, banner.mimetype);
             await UserService.updateBanner(user.id, path);
+            res.sendStatus(204);
+        });
+    }
+
+    public async updateProfileVideo(req: Request, res: Response) {
+        const { user } = req.body;
+        const planID = await UserService.getUserPlanID(user.id);
+        if (!planID) return res.status(403).json({ message: 'Nie posiadasz kanału' });
+        profileVideoUpload(req, res, async err => {
+            if (err) {
+                if (err instanceof MulterError) {
+                    if (err.code === 'LIMIT_FILE_SIZE') {
+                        return res.status(422).json({ message: 'Filmik profilowy może mieć maksymalnie 100MB' });
+                    }
+                    else if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+                        return res.status(422).json({ message: 'Filmik profilowy musi być filmem' });
+                    }
+                    else {
+                        return res.sendStatus(500);
+                    }
+                }
+                else {
+                    return res.sendStatus(500);
+                }
+            }
+
+            let video;
+            if (req.files && typeof req.files === 'object' && 'profileVideo' in req.files) {
+                video = req.files['profileVideo'][0];
+            }
+            if (!video) return res.status(422).json({ message: 'Filmik profilowy jest wymagany' });
+
+            const path = generateUniqueId();
+            await AzureService.postAzureObject(video.buffer, `profileVideos/${path}`, video.mimetype);
+            await UserService.updateProfileVideo(user.id, path);
             res.sendStatus(204);
         });
     }
