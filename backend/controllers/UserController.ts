@@ -294,7 +294,7 @@ class UserController {
     public async updateSettings(req: Request, res: Response) {
         const { user, password } = req.body;
         try {
-            await UserService.validateSettings(req);
+            await UserService.validateSettings(req, user.id);
         } catch (exception) {
             const error = exception as Error;
             if (error.cause === 'VALIDATION') {
@@ -308,6 +308,12 @@ class UserController {
         if (password) passwordHash = await AuthService.hashPassword(password);
         await UserService.updateSettings(user.id, req, passwordHash);
         res.sendStatus(204);
+    }
+
+    public async checkOAuth(req: Request, res: Response) {
+        const { user } = req.body;
+        const me = await UserService.findUserById(user.id) as User;
+        res.json({ hasOAuth: me.oAuth });
     }
 }
 

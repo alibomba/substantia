@@ -16,7 +16,7 @@ interface Props {
 }
 
 const Input = ({ id, type, label, placeholder, minLength, maxLength, min, max, onChange, value, required, width }: Props) => {
-    const [isFocused, setIsFocused] = useState<boolean>(false);
+    const [isFocused, setIsFocused] = useState<boolean>(value ? true : false);
     const [isPlaceholder, setIsPlaceholder] = useState<boolean>(false);
 
     function handleFocus() {

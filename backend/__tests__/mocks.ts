@@ -182,3 +182,5 @@ export const mockSettings = {
 export const mockValidateSettings = vi.spyOn(UserService, 'validateSettings');
 
 export const mockUpdateSettings = vi.spyOn(UserService, 'updateSettings');
+
+export const mockFindUserById = vi.spyOn(UserService, 'findUserById');

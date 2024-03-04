@@ -14,7 +14,7 @@ class AzureService {
         const containerSAS = generateBlobSASQueryParameters({
             containerName,
             permissions: BlobSASPermissions.parse('r'),
-            startsOn: new Date(),
+            startsOn: new Date(new Date().getTime() - 3000),
             expiresOn
         }, new StorageSharedKeyCredential(accountName, accountKey));
 

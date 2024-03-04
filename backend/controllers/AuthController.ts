@@ -49,7 +49,10 @@ class AuthController {
         } catch (err) {
             return res.status(401).json({ message: 'Token nieprawidłowy' });
         }
-        const newPayload: MyJWTPayload = { id: oldPayload.id, email: oldPayload.email, username: oldPayload.username, slug: oldPayload.slug, avatar: oldPayload.avatar, hasChannel: oldPayload.hasChannel };
+        const user = await UserService.findUserById(oldPayload.id);
+        if (!user) return res.status(401).json({ message: 'Użytkownik nie istnieje' });
+        if (user.avatar) user.avatar = await AzureService.getAzureObject(`pfp/${user.avatar}`);
+        const newPayload: MyJWTPayload = { id: user.id, email: user.email, username: user.username, slug: user.slug, avatar: user.avatar, hasChannel: user.hasChannel };
         const newToken = AuthService.signToken(newPayload, 'access');
         res.json({ accessToken: newToken });
     }

@@ -698,6 +698,10 @@ paths:
           in: body
           required: false
           type: string
+        - name: oldPassword
+          in: body
+          required: false
+          type: string
       responses:
         204:
           description: Settings were updated successfully
@@ -709,6 +713,27 @@ paths:
                 $ref: "#/definitions/Error"
         422:
           description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/check-oauth:
+    get:
+      summary: Check if a logged in user has an oAuth account
+      security:
+        - JwtAuth: []
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hasOAuth:
+                    type: boolean
+        401:
+          description: User is unauthorized
           content:
             application/json:
               schema:

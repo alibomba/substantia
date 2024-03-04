@@ -2,6 +2,7 @@ import { Request } from "express";
 import prisma from "../models/prisma";
 import AzureService from "./AzureService";
 import FileService from "./FileService";
+import AuthService from "./AuthService";
 
 
 class UserService {
@@ -11,6 +12,10 @@ class UserService {
 
     public async findUserBySlug(slug: string) {
         return await prisma.user.findUnique({ where: { slug } });
+    }
+
+    public async findUserById(id: string) {
+        return await prisma.user.findUnique({ where: { id } });
     }
 
     public async registerValidation(email: string, username: string, slug: string, password: string) {
@@ -196,8 +201,8 @@ class UserService {
         return settings;
     }
 
-    public async validateSettings(req: Request) {
-        const { username, slug, facebook, instagram, twitter, description, email, password } = req.body;
+    public async validateSettings(req: Request, myID: string) {
+        const { username, slug, facebook, instagram, twitter, description, email, password, oldPassword } = req.body;
         //first form
         if (username || slug) {
             if (!username) throw new Error('Nazwa użytkownika jest wymagana', { cause: 'VALIDATION' });
@@ -205,7 +210,7 @@ class UserService {
             if (!slug) throw new Error('Identyfikator jest wymagany', { cause: 'VALIDATION' });
             if (slug.length > 20) throw new Error('Identyfikator może mieć maksymalnie 20 znaków', { cause: 'VALIDATION' });
             const slugDuplicate = await this.findUserBySlug(slug);
-            if (slugDuplicate) throw new Error('Identyfikator jest już zajęty', { cause: 'VALIDATION' });
+            if (slugDuplicate && slugDuplicate.id !== myID) throw new Error('Identyfikator jest już zajęty', { cause: 'VALIDATION' });
         }
         //socialmedia
         if (facebook && facebook.length > 500) throw new Error('Facebook może mieć maksymalnie 500 znaków', { cause: 'VALIDATION' });
@@ -217,10 +222,17 @@ class UserService {
         if (email) {
             if (email.length > 20) throw new Error('Adres e-mail może mieć maksymalnie 200 znaków', { cause: 'VALIDATION' });
             const emailDuplicate = await this.findUserByEmail(email);
-            if (emailDuplicate) throw new Error('Adres e-mail jest już zajęty', { cause: 'VALIDATION' });
+            if (emailDuplicate && emailDuplicate.id !== myID) throw new Error('Adres e-mail jest już zajęty', { cause: 'VALIDATION' });
         }
         //fourth form
-        if (password && (password.length < 8 || password.length > 60)) throw new Error('Hasło musi mieć pomiędzy 8 a 60 znaków', { cause: 'VALIDATION' });
+        if (password) {
+            if (!oldPassword) throw new Error('Hasło musi mieć pomiędzy 8 a 60 znaków', { cause: 'VALIDATION' });
+            const me = await this.findUserById(myID);
+            if (!me) throw new Error('Użytkownik nie istnieje', { cause: 'VALIDATION' });
+            if (me.oAuth) throw new Error('Użytkownik zarejestrowany z Google nie może zmienić hasła', { cause: 'VALIDATION' });
+            if (!await AuthService.verifyPassword(oldPassword, me.password!)) throw new Error('Niepoprawne stare hasło', { cause: 'VALIDATION' });
+            if (password.length < 8 || password.length > 60) throw new Error('Hasło musi mieć pomiędzy 8 a 60 znaków', { cause: 'VALIDATION' });
+        }
     }
 
     public async updateSettings(id: string, req: Request, password: string | undefined) {
