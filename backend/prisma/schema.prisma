@@ -30,8 +30,8 @@ model User {
   password            String?
   oAuth               Boolean
   hasChannel          Boolean          @default(false)
-  stripeChannelPlanID String?
-  stripeCustomerID    String?
+  stripeChannelPlanID String?          @unique
+  stripeCustomerID    String?          @unique
   subscriptionPrice   Int?
   avatar              String?
   banner              String?

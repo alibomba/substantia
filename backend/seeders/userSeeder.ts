@@ -27,6 +27,7 @@ async function userSeeder() {
                 oAuth: false,
                 hasChannel: false,
                 password: '$2b$10$h9./CcTKzukWlJJjXE1JAeS/wsEl5jstnBkCsMoO2F8rlAa1h7ZKS',
+                stripeCustomerID: 'cus_PgNgONx3XmqF7a'
             },
             {
                 id: '3b8160fe-41a2-4e58-b441-ea55f689eec9',
@@ -42,6 +43,7 @@ async function userSeeder() {
                 password: '$2b$10$h9./CcTKzukWlJJjXE1JAeS/wsEl5jstnBkCsMoO2F8rlAa1h7ZKS',
                 subscriptionPrice: 1740,
                 stripeChannelPlanID: 'plan_PfwZwuaYkfnPZz',
+                stripeCustomerID: 'cus_PgNdFO67S0p9tY'
             },
         ]
     });

@@ -738,6 +738,39 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/feed:
+    get:
+      summary: Get user's posts feed
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          type: number
+      responses:
+        200:
+          description: User's paginated feed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPage:
+                    type: number
+                  lastPage:
+                    type: number
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Post"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+
         
 
 definitions:

@@ -94,8 +94,8 @@ const CreateChannel = ({ setPopup, setError }: Props) => {
             {
                 isModalActive &&
                 <>
-                    <div className="fixed inset-0 bg-overlayBlack"></div>
-                    <form data-testid='createChannelForm' className="fixed flex flex-col items-center gap-6 top-1/2 -translate-y-1/2 w-[50em] left-1/2 transform -translate-x-1/2 max-w-[95%] bg-white border-[3px] rounded-2xl border-primary px-6 py-4 pt-8">
+                    <div className="z-[999] fixed inset-0 bg-overlayBlack"></div>
+                    <form data-testid='createChannelForm' className="z-[1000] fixed flex flex-col items-center gap-6 top-1/2 -translate-y-1/2 w-[50em] left-1/2 transform -translate-x-1/2 max-w-[95%] bg-white border-[3px] rounded-2xl border-primary px-6 py-4 pt-8">
                         <button type="button" onClick={handleClose} className="text-5xl text-red-600 absolute right-1 top-1" title="Zamknij okno">
                             <MdClose />
                         </button>

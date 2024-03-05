@@ -4,6 +4,8 @@ import postUpload from '../middleware/postUpload';
 import { MulterError } from 'multer';
 import AzureService from '../services/AzureService';
 import { generateUniqueId } from '../utils';
+import StripeService from '../services/StripeService';
+import UserService from '../services/UserService';
 
 
 class PostController {
@@ -79,6 +81,17 @@ class PostController {
                 res.sendStatus(500);
             }
         });
+    }
+
+    public async feed(req: Request, res: Response) {
+        let page = req.query.page as string | number;
+        if (page) page = +page;
+        else page = 1;
+        const { user } = req.body;
+        const customerID = await UserService.getUserCustomerID(user.id);
+        if (!customerID) return res.json({ currentPage: 0, lastPage: 0, data: [] });
+        const posts = await PostService.getUserFeed(customerID, page);
+        res.json(posts);
     }
 }
 

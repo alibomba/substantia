@@ -184,3 +184,21 @@ export const mockValidateSettings = vi.spyOn(UserService, 'validateSettings');
 export const mockUpdateSettings = vi.spyOn(UserService, 'updateSettings');
 
 export const mockFindUserById = vi.spyOn(UserService, 'findUserById');
+
+export const mockGetUserFeed = vi.spyOn(PostService, 'getUserFeed');
+
+export const mockViewablePost = {
+    id: '123',
+    content: 'test post content',
+    videoPath: null,
+    userId: '123',
+    images: [],
+    poll: null,
+    user: {
+        id: '123',
+        username: 'TestUser',
+        slug: 'testuser',
+        avatar: null
+    },
+    createdAt: new Date()
+}

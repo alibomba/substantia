@@ -73,6 +73,15 @@ class StripeService {
         });
         return subscriptions.data.length;
     }
+
+    public async userSubscriptionPlansList(customerID: string) {
+        const stripe = this.getStripeInstance();
+        const subscriptions = await stripe.subscriptions.list({
+            customer: customerID,
+            status: 'active'
+        });
+        return subscriptions.data.map(subscription => subscription.items.data[0].plan.id);
+    }
 }
 
 export default new StripeService();

@@ -1,6 +1,7 @@
 import prisma from "../models/prisma";
 import { Request } from 'express';
 import AzureService from "./AzureService";
+import StripeService from "./StripeService";
 
 class PostService {
     public postValidation(req: Request) {
@@ -75,6 +76,34 @@ class PostService {
             post.user.avatar = await AzureService.getAzureObject(`pfp/${post.user.avatar}`);
         }
         return post;
+    }
+
+    public async getUserFeed(customerID: string, page: number) {
+        const PER_PAGE = 10;
+        const userSubscribedPlans = await StripeService.userSubscriptionPlansList(customerID);
+        const postCount = await prisma.post.count({ where: { user: { stripeChannelPlanID: { in: userSubscribedPlans } } } });
+        if (!postCount) return { currentPage: 0, lastPage: 0, data: [] };
+        const lastPage = Math.ceil(postCount / PER_PAGE);
+        if (page > lastPage) return { lastPage, currentPage: lastPage, data: [] };
+        const offset = (page - 1) * PER_PAGE;
+        const postIds = await prisma.post.findMany({
+            where: {
+                user: { stripeChannelPlanID: { in: userSubscribedPlans } }
+            },
+            take: PER_PAGE,
+            skip: offset,
+            select: { id: true },
+            orderBy: { createdAt: 'desc' }
+        });
+        const posts = await Promise.all(postIds.map(async item => {
+            const id = item.id;
+            return await this.getPost(id);
+        }));
+        return {
+            currentPage: page,
+            lastPage,
+            data: posts
+        }
     }
 }
 
