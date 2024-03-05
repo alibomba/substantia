@@ -44,7 +44,7 @@ const Profile = () => {
             source.cancel();
         }
 
-    }, []);
+    }, [id]);
 
     if (isLoading || !profile) {
         return <Loading />
