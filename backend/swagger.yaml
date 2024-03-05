@@ -821,6 +821,7 @@ definitions:
             type: string
           avatar:
             type: string
+            nullable: true
       createdAt:
         type: string
   ProfilePreview:
