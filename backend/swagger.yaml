@@ -1167,8 +1167,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/comment-replies/{id}:
+    get:
+      summary: Get comment's replies
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Array of comment's replies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/definitions/CommentReply"
+        404:
+          description: Comment does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
 
-
+                
 definitions:
   Error:
     type: object
@@ -1292,6 +1329,31 @@ definitions:
       userId:
         type: string
       postId:
+        type: string
+      user:
+        type: object
+        properties:
+          id:
+            type: string
+          username:
+            type: string
+          slug:
+            type: string
+          avatar:
+            type: string
+            nullable: true
+      createdAt:
+        type: string
+  CommentReply:
+    type: object
+    properties:
+      id:
+        type: string
+      content:
+        type: string
+      userId:
+        type: string
+      commentId:
         type: string
       user:
         type: object

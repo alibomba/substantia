@@ -70,6 +70,16 @@ class CommentService {
             return true;
         }
     }
+
+    public async getCommentReplies(id: string) {
+        const comment = await prisma.postComment.findUnique({ where: { id }, select: { replies: { select: { id: true } } } });
+        return await Promise.all(comment!.replies.map(async item => {
+            const id = item.id;
+            const reply = await prisma.commentReply.findUnique({ where: { id }, include: { user: { select: { id: true, username: true, slug: true, avatar: true } } } });
+            if (reply!.user.avatar) reply!.user.avatar = await AzureService.getAzureObject(`pfp/${reply!.user.avatar}`);
+            return reply;
+        }));
+    }
 }
 
 export default new CommentService();

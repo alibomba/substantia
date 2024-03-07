@@ -45,6 +45,17 @@ class CommentController {
         if (isLikedAfter) res.sendStatus(201);
         else res.sendStatus(204);
     }
+
+    public async commentReplies(req: Request, res: Response) {
+        const { id } = req.params;
+        const { user } = req.body;
+        if (!await CommentService.doesCommentExist(id)) return res.status(404).json({ message: 'Komentarz nie istnieje' });
+        const isSubscribed = await StripeService.isSubscribedToCommentedPostOwner(id, user.id);
+        const isPostMine = await PostService.isCommentedPostMine(id, user.id);
+        if (!isSubscribed && !isPostMine) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const replies = await CommentService.getCommentReplies(id);
+        res.json(replies);
+    }
 }
 
 export default new CommentController();

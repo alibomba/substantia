@@ -271,3 +271,19 @@ export const mockGetCommentStats = vi.spyOn(CommentService, 'getCommentStats');
 export const mockIsCommentLiked = vi.spyOn(CommentService, 'isLiked');
 
 export const mockToggleCommentLike = vi.spyOn(CommentService, 'toggleLike');
+
+export const mockGetCommentReplies = vi.spyOn(CommentService, 'getCommentReplies');
+
+export const mockViewableReply = {
+    id: '123',
+    content: 'test comment reply content',
+    userId: '123',
+    commentId: '123',
+    user: {
+        id: '123',
+        username: 'TestUser',
+        slug: 'testuser',
+        avatar: null
+    },
+    createdAt: new Date()
+}
