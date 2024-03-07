@@ -158,6 +158,12 @@ class PostController {
         if (isBookmarkedAfter) res.sendStatus(201);
         else res.sendStatus(204);
     }
+
+    public async myBookmarks(req: Request, res: Response) {
+        const { user } = req.body;
+        const bookmarks = await PostService.getUserBookmarks(user.id);
+        res.json(bookmarks);
+    }
 }
 
 export default new PostController();

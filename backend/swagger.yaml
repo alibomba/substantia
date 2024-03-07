@@ -973,7 +973,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
-
+  /api/my-bookmarks:
+    get:
+      summary: Get bookmarked posts of the logged in user
+      security:
+        - JwtAuth: []
+      responses:
+        200:
+          description: Array of user's bookmarked posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/definitions/Post"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
 
 definitions:
   Error:

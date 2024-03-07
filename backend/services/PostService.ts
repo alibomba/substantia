@@ -216,6 +216,11 @@ class PostService {
             return true;
         }
     }
+
+    public async getUserBookmarks(id: string) {
+        const bookmarks = await prisma.bookmark.findMany({ where: { userId: id }, select: { post: { select: { id: true } } } });
+        return await Promise.all(bookmarks.map(async bookmark => await this.getPost(bookmark.post.id)));
+    }
 }
 
 export default new PostService();
