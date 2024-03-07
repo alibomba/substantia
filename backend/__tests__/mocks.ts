@@ -285,5 +285,14 @@ export const mockViewableReply = {
         slug: 'testuser',
         avatar: null
     },
+    likes: 22,
     createdAt: new Date()
 }
+
+export const mockDoesReplyExist = vi.spyOn(CommentService, 'doesReplyExist');
+
+export const mockIsSubscribedToRepliedPostOwner = vi.spyOn(StripeService, 'isSubscribedToRepliedPostOwner');
+
+export const mockIsRepliedPostMine = vi.spyOn(PostService, 'isRepliedPostMine');
+
+export const mockToggleReplyLike = vi.spyOn(CommentService, 'toggleReplyLike');

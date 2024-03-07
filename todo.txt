@@ -1,5 +1,3 @@
--comment replies
--reply stats
 -reply like
 -add comment
 -add reply

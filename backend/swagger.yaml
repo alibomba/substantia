@@ -1204,6 +1204,39 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/like-reply/{id}:
+    post:
+      summary: Toggle like of the specified comment reply
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        201:
+          description: Like was added to the comment reply
+        204:
+          description: Like was deleted from the comment reply
+        404:
+          description: Comment does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
 
                 
 definitions:
@@ -1367,5 +1400,7 @@ definitions:
           avatar:
             type: string
             nullable: true
+      likes:
+        type: number
       createdAt:
         type: string

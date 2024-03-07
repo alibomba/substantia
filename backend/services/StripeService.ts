@@ -110,6 +110,17 @@ class StripeService {
         const planID = await UserService.getUserPlanID(comment!.post.userId) as string;
         return await this.isSubscribed(customerID, planID);
     }
+
+    public async isSubscribedToRepliedPostOwner(id: string, userId: string) {
+        const customerID = await UserService.getUserCustomerID(userId);
+        if (!customerID) return false;
+        const reply = await prisma.commentReply.findUnique({
+            where: { id },
+            select: { comment: { select: { post: { select: { userId: true } } } } }
+        });
+        const planID = await UserService.getUserPlanID(reply!.comment.post.userId) as string;
+        return await this.isSubscribed(customerID, planID);
+    }
 }
 
 export default new StripeService();

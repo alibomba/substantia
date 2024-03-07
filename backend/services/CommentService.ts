@@ -77,8 +77,26 @@ class CommentService {
             const id = item.id;
             const reply = await prisma.commentReply.findUnique({ where: { id }, include: { user: { select: { id: true, username: true, slug: true, avatar: true } } } });
             if (reply!.user.avatar) reply!.user.avatar = await AzureService.getAzureObject(`pfp/${reply!.user.avatar}`);
-            return reply;
+            const likes = await prisma.replyLike.findMany({ where: { replyId: id } });
+            return { ...reply, likes: likes.length };
         }));
+    }
+
+    public async doesReplyExist(id: string) {
+        const reply = await prisma.commentReply.findUnique({ where: { id } });
+        if (reply) return true;
+        else return false;
+    }
+
+    public async toggleReplyLike(id: string, userId: string) {
+        const like = await prisma.replyLike.findFirst({ where: { replyId: id, userId } });
+        if (like) {
+            await prisma.replyLike.delete({ where: { id: like.id } });
+            return false;
+        } else {
+            await prisma.replyLike.create({ data: { replyId: id, userId } });
+            return true;
+        }
     }
 }
 
