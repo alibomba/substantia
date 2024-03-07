@@ -20,6 +20,7 @@ const Feed = () => {
     useEffect(() => {
         const source = axios.CancelToken.source();
         async function fetchData() {
+            setIsLoading(true);
             try {
                 const { data: res } = await axiosClient({
                     method: 'get',
@@ -48,7 +49,7 @@ const Feed = () => {
     }, [page]);
 
     useEffect(() => {
-        if (inView && (isMore)) {
+        if (inView && isMore) {
             setPage(prev => prev + 1);
         }
     }, [inView]);

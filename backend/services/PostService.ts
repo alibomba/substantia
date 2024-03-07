@@ -246,6 +246,21 @@ class PostService {
             data: posts
         }
     }
+
+    public async isPollOptionMine(id: string, userId: string) {
+        const pollOption = await prisma.postPollOption.findUnique({ where: { id }, select: { poll: { select: { post: { select: { userId: true } } } } } });
+        return pollOption!.poll.post.userId === userId;
+    }
+
+    public async isPollMine(id: string, userId: string) {
+        const poll = await prisma.postPoll.findUnique({ where: { id }, select: { post: { select: { userId: true } } } });
+        return poll!.post.userId === userId;
+    }
+
+    public async isPostMine(id: string, userId: string) {
+        const post = await prisma.post.findUnique({ where: { id }, select: { userId: true } });
+        return post!.userId === userId;
+    }
 }
 
 export default new PostService();

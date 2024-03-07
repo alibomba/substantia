@@ -104,7 +104,8 @@ class PostController {
         const planID = await UserService.getUserPlanID(option.poll.post.userId) as string;
         if (!planID) return res.status(404).json({ message: 'Użytkownik nie istnieje' });
         const isSubscribed = await StripeService.isSubscribed(customerID, planID);
-        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const isOptionMine = await PostService.isPollOptionMine(id, user.id);
+        if (!isSubscribed && !isOptionMine) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
         const optionVotes = await PostService.voteOnOption(id, user.id);
         res.json(optionVotes);
     }
@@ -115,7 +116,8 @@ class PostController {
         const myOption = await PostService.getMyVote(id, user.id);
         if (myOption === null) return res.status(404).json({ message: 'Ankieta nie istnieje' });
         const isSubscribed = await StripeService.isSubscribedToPollOwner(id, user.id);
-        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const isPollMine = await PostService.isPollMine(id, user.id);
+        if (!isSubscribed && !isPollMine) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
         if (myOption === false) return res.json({ selectedOption: null, percentages: [] });
         const percentages = await PostService.voteOnOption(myOption, user.id);
         res.json({ selectedOption: myOption, percentages });
@@ -127,7 +129,8 @@ class PostController {
         const stats = await PostService.getPostStats(id);
         if (!stats) return res.status(404).json({ message: 'Post nie istnieje' });
         const isSubscribed = await StripeService.isSubscribedToPostOwner(id, user.id);
-        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const isPostMine = await PostService.isPostMine(id, user.id);
+        if (!isSubscribed && !isPostMine) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
         const isLiked = await PostService.isLiked(id, user.id);
         const isBookmarked = await PostService.isBookmarked(id, user.id);
         res.json({
@@ -142,7 +145,8 @@ class PostController {
         const { user } = req.body;
         if (!await PostService.doesPostExist(id)) return res.status(404).json({ message: 'Post nie istnieje' });
         const isSubscribed = await StripeService.isSubscribedToPostOwner(id, user.id);
-        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const isPostMine = await PostService.isPostMine(id, user.id);
+        if (!isSubscribed && !isPostMine) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
         const isLikedAfter = await PostService.togglePostLike(id, user.id);
         if (isLikedAfter) res.sendStatus(201);
         else res.sendStatus(204);
@@ -153,7 +157,8 @@ class PostController {
         const { user } = req.body;
         if (!await PostService.doesPostExist(id)) return res.status(404).json({ message: 'Post nie istnieje' });
         const isSubscribed = await StripeService.isSubscribedToPostOwner(id, user.id);
-        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const isPostMine = await PostService.isPostMine(id, user.id);
+        if (!isSubscribed && !isPostMine) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
         const isBookmarkedAfter = await PostService.togglePostBookmark(id, user.id);
         if (isBookmarkedAfter) res.sendStatus(201);
         else res.sendStatus(204);
@@ -176,7 +181,7 @@ class PostController {
         const planID = await UserService.getUserPlanID(id);
         if (!planID) return res.status(404).json({ message: 'Profil nie istnieje' });
         const isSubscribed = await StripeService.isSubscribed(customerID, planID);
-        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        if (!isSubscribed && id !== user.id) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
         const posts = await PostService.getUserPosts(id, page);
         res.json(posts);
     }

@@ -236,3 +236,9 @@ export const mockTogglePostBookmark = vi.spyOn(PostService, 'togglePostBookmark'
 export const mockGetUserBookmarks = vi.spyOn(PostService, 'getUserBookmarks');
 
 export const mockGetUserPosts = vi.spyOn(PostService, 'getUserPosts');
+
+export const mockIsPollOptionMine = vi.spyOn(PostService, 'isPollOptionMine');
+
+export const mockIsPollMine = vi.spyOn(PostService, 'isPollMine');
+
+export const mockIsPostMine = vi.spyOn(PostService, 'isPostMine');

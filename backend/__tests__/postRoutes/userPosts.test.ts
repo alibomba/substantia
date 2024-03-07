@@ -12,7 +12,7 @@ beforeEach(() => {
 
 describe('GET /user-posts/:id', () => {
     describe('unauthorized access', () => {
-        jwtMiddlewareTest('GET', '/api/user-posts/123');
+        jwtMiddlewareTest('GET', '/api/user-posts/1234');
     });
 
     describe('user has no customer id', () => {
@@ -22,7 +22,7 @@ describe('GET /user-posts/:id', () => {
             mockGetUserCustomerID.mockResolvedValueOnce(null);
 
             const { statusCode, body } = await supertest(app)
-                .get('/api/user-posts/123')
+                .get('/api/user-posts/1234')
                 .set('Authorization', 'Bearer token');
 
             expect(statusCode).toBe(403);
@@ -38,7 +38,7 @@ describe('GET /user-posts/:id', () => {
             mockGetUserPlanID.mockResolvedValueOnce(null);
 
             const { statusCode, body } = await supertest(app)
-                .get('/api/user-posts/123')
+                .get('/api/user-posts/1234')
                 .set('Authorization', 'Bearer token');
 
             expect(statusCode).toBe(404);
@@ -55,7 +55,7 @@ describe('GET /user-posts/:id', () => {
             mockIsSubscribed.mockResolvedValueOnce(false);
 
             const { statusCode, body } = await supertest(app)
-                .get('/api/user-posts/123')
+                .get('/api/user-posts/1234')
                 .set('Authorization', 'Bearer token');
 
             expect(statusCode).toBe(403);
@@ -72,10 +72,10 @@ describe('GET /user-posts/:id', () => {
             mockIsSubscribed.mockResolvedValueOnce(true);
 
             await supertest(app)
-                .get('/api/user-posts/123')
+                .get('/api/user-posts/1234')
                 .set('Authorization', 'Bearer token');
 
-            expect(mockGetUserPosts).toHaveBeenCalledWith('123', 1);
+            expect(mockGetUserPosts).toHaveBeenCalledWith('1234', 1);
         });
     });
 
@@ -88,10 +88,10 @@ describe('GET /user-posts/:id', () => {
             mockIsSubscribed.mockResolvedValueOnce(true);
 
             await supertest(app)
-                .get('/api/user-posts/123?page=3')
+                .get('/api/user-posts/1234?page=3')
                 .set('Authorization', 'Bearer token');
 
-            expect(mockGetUserPosts).toHaveBeenCalledWith('123', 3);
+            expect(mockGetUserPosts).toHaveBeenCalledWith('1234', 3);
         });
 
         it('returns 200 status and correct data', async () => {
@@ -100,6 +100,37 @@ describe('GET /user-posts/:id', () => {
             mockGetUserCustomerID.mockResolvedValueOnce('customerID');
             mockGetUserPlanID.mockResolvedValueOnce('planID');
             mockIsSubscribed.mockResolvedValueOnce(true);
+            mockGetUserPosts.mockResolvedValueOnce({
+                currentPage: 2,
+                lastPage: 4,
+                data: [
+                    mockViewablePost,
+                    mockViewablePost
+                ]
+            });
+
+            const { statusCode, body } = await supertest(app)
+                .get('/api/user-posts/1234?page=2')
+                .set('Authorization', 'Bearer token');
+
+            const expectedPost = { ...mockViewablePost, createdAt: expect.any(String) };
+
+            expect(statusCode).toBe(200);
+            expect(body).toEqual({
+                currentPage: 2,
+                lastPage: 4,
+                data: [expectedPost, expectedPost]
+            });
+        });
+    });
+
+    describe('user is not subscribed to the profile but owns the profile', () => {
+        it('returns 200 status and correct data', async () => {
+            mockVerifyToken.mockResolvedValueOnce(mockPayload);
+            mockFindUserByEmail.mockResolvedValueOnce(mockUser);
+            mockGetUserCustomerID.mockResolvedValueOnce('customerID');
+            mockGetUserPlanID.mockResolvedValueOnce('planID');
+            mockIsSubscribed.mockResolvedValueOnce(false);
             mockGetUserPosts.mockResolvedValueOnce({
                 currentPage: 2,
                 lastPage: 4,
