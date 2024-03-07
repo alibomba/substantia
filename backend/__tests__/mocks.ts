@@ -259,3 +259,13 @@ export const mockViewableComment = {
     },
     createdAt: new Date()
 }
+
+export const mockDoesCommentExist = vi.spyOn(CommentService, 'doesCommentExist');
+
+export const mockIsSubscribedToCommentedPostOwner = vi.spyOn(StripeService, 'isSubscribedToCommentedPostOwner');
+
+export const mockIsCommentedPostMine = vi.spyOn(PostService, 'isCommentedPostMine');
+
+export const mockGetCommentStats = vi.spyOn(CommentService, 'getCommentStats');
+
+export const mockIsCommentLiked = vi.spyOn(CommentService, 'isLiked');

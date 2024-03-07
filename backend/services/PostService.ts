@@ -261,6 +261,11 @@ class PostService {
         const post = await prisma.post.findUnique({ where: { id }, select: { userId: true } });
         return post!.userId === userId;
     }
+
+    public async isCommentedPostMine(id: string, userId: string) {
+        const comment = await prisma.postComment.findUnique({ where: { id }, select: { post: { select: { userId: true } } } });
+        return comment!.post.userId === userId;
+    }
 }
 
 export default new PostService();

@@ -1089,7 +1089,51 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
-
+  /api/comment-stats/{id}:
+    get:
+      summary: Get comment stats and check if the logged in user has liked it
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Stats were retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stats:
+                    type: object
+                    properties:
+                      likes:
+                        type: number
+                      replies:
+                        type: number
+                  isLiked:
+                    type: boolean
+        404:
+          description: Comment does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
 
 
 

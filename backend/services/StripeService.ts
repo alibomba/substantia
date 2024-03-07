@@ -97,7 +97,18 @@ class StripeService {
         if (!customerID) return false;
         const post = await prisma.post.findUnique({ where: { id }, select: { userId: true } });
         const planID = await UserService.getUserPlanID(post!.userId) as string;
-        return this.isSubscribed(customerID, planID);
+        return await this.isSubscribed(customerID, planID);
+    }
+
+    public async isSubscribedToCommentedPostOwner(id: string, userId: string) {
+        const customerID = await UserService.getUserCustomerID(userId);
+        if (!customerID) return false;
+        const comment = await prisma.postComment.findUnique({
+            where: { id },
+            select: { post: { select: { userId: true } } }
+        });
+        const planID = await UserService.getUserPlanID(comment!.post.userId) as string;
+        return await this.isSubscribed(customerID, planID);
     }
 }
 

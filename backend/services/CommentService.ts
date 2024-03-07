@@ -33,6 +33,32 @@ class CommentService {
             data: comments
         }
     }
+
+    public async doesCommentExist(id: string) {
+        const comment = await prisma.postComment.findUnique({ where: { id } });
+        if (comment) return true;
+        else return false;
+    }
+
+    public async getCommentStats(id: string) {
+        const comment = await prisma.postComment.findUnique({
+            where: { id },
+            select: {
+                likes: true,
+                replies: true
+            }
+        });
+        return {
+            likes: comment!.likes.length,
+            replies: comment!.replies.length
+        }
+    }
+
+    public async isLiked(id: string, userId: string) {
+        const like = await prisma.commentLike.findFirst({ where: { commentId: id, userId } });
+        if (like) return true;
+        else return false;
+    }
 }
 
 export default new CommentService();

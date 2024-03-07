@@ -5,5 +5,6 @@ import jwtAuthentication from "../middleware/jwtAuthentication";
 const router = Router();
 
 router.get('/post-comments/:id', jwtAuthentication, CommentController.postComments);
+router.get('/comment-stats/:id', jwtAuthentication, CommentController.commentStats);
 
 export default router;
