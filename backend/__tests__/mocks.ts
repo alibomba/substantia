@@ -269,3 +269,5 @@ export const mockIsCommentedPostMine = vi.spyOn(PostService, 'isCommentedPostMin
 export const mockGetCommentStats = vi.spyOn(CommentService, 'getCommentStats');
 
 export const mockIsCommentLiked = vi.spyOn(CommentService, 'isLiked');
+
+export const mockToggleCommentLike = vi.spyOn(CommentService, 'toggleLike');

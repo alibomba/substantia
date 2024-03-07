@@ -59,6 +59,17 @@ class CommentService {
         if (like) return true;
         else return false;
     }
+
+    public async toggleLike(id: string, userId: string) {
+        const like = await prisma.commentLike.findFirst({ where: { commentId: id, userId } });
+        if (like) {
+            await prisma.commentLike.delete({ where: { id: like.id } });
+            return false;
+        } else {
+            await prisma.commentLike.create({ data: { commentId: id, userId } });
+            return true;
+        }
+    }
 }
 
 export default new CommentService();

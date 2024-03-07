@@ -6,5 +6,6 @@ const router = Router();
 
 router.get('/post-comments/:id', jwtAuthentication, CommentController.postComments);
 router.get('/comment-stats/:id', jwtAuthentication, CommentController.commentStats);
+router.post('/like-comment/:id', jwtAuthentication, CommentController.like);
 
 export default router;
