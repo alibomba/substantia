@@ -221,6 +221,31 @@ class PostService {
         const bookmarks = await prisma.bookmark.findMany({ where: { userId: id }, select: { post: { select: { id: true } } } });
         return await Promise.all(bookmarks.map(async bookmark => await this.getPost(bookmark.post.id)));
     }
+
+    public async getUserPosts(id: string, page: number) {
+        const PER_PAGE = 10;
+        const postCount = await prisma.post.count({ where: { userId: id } });
+        if (!postCount) return { currentPage: 0, lastPage: 0, data: [] };
+        const lastPage = Math.ceil(postCount / PER_PAGE);
+        if (page > lastPage) return { lastPage, currentPage: lastPage, data: [] };
+        const offset = (page - 1) * PER_PAGE;
+        const postIds = await prisma.post.findMany({
+            where: { userId: id },
+            take: PER_PAGE,
+            skip: offset,
+            select: { id: true },
+            orderBy: { createdAt: 'desc' }
+        });
+        const posts = await Promise.all(postIds.map(async item => {
+            const id = item.id;
+            return await this.getPost(id);
+        }));
+        return {
+            currentPage: page,
+            lastPage,
+            data: posts
+        }
+    }
 }
 
 export default new PostService();

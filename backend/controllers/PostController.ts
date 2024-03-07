@@ -164,6 +164,22 @@ class PostController {
         const bookmarks = await PostService.getUserBookmarks(user.id);
         res.json(bookmarks);
     }
+
+    public async userPosts(req: Request, res: Response) {
+        const { id } = req.params;
+        const { user } = req.body;
+        let page = req.query.page as string | number;
+        if (page) page = +page;
+        else page = 1;
+        const customerID = await UserService.getUserCustomerID(user.id);
+        if (!customerID) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const planID = await UserService.getUserPlanID(id);
+        if (!planID) return res.status(404).json({ message: 'Profil nie istnieje' });
+        const isSubscribed = await StripeService.isSubscribed(customerID, planID);
+        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const posts = await PostService.getUserPosts(id, page);
+        res.json(posts);
+    }
 }
 
 export default new PostController();

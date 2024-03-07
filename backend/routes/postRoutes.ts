@@ -12,5 +12,6 @@ router.get('/post-stats/:id', jwtAuthentication, PostController.postStats);
 router.post('/like-post/:id', jwtAuthentication, PostController.likePost);
 router.post('/bookmark-post/:id', jwtAuthentication, PostController.bookmarkPost);
 router.get('/my-bookmarks', jwtAuthentication, PostController.myBookmarks);
+router.get('/user-posts/:id', jwtAuthentication, PostController.userPosts);
 
 export default router;

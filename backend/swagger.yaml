@@ -993,6 +993,55 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/user-posts/{id}:
+    get:
+      summary: Get paginated posts of the specified user
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: page
+          in: query
+          required: false
+          type: number
+      responses:
+        200:
+          description: User's paginated posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPage:
+                    type: number
+                  lastPage:
+                    type: number
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Post"
+        404:
+          description: Profile does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+
 
 definitions:
   Error:
