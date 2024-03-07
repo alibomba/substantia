@@ -44,6 +44,7 @@ model User {
   postLikes           PostLike[]
   postComments        PostComment[]
   commentLikes        CommentLike[]
+  commentReplies      CommentReply[]
   replyLikes          ReplyLike[]
   pollVotes           PostPollOption[]
   posts               Post[]
@@ -108,7 +109,7 @@ model PostLike {
 
 model PostComment {
   id        String         @id @default(uuid())
-  content   String
+  content   String //max 400ch
   likes     CommentLike[]
   replies   CommentReply[]
   userId    String
@@ -130,6 +131,8 @@ model CommentLike {
 model CommentReply {
   id        String      @id @default(uuid())
   content   String
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   commentId String
   comment   PostComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   likes     ReplyLike[]

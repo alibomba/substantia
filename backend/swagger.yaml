@@ -1041,6 +1041,56 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/post-comments/{id}:
+    get:
+      summary: Get paginated comments associated to the specified post
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: page
+          in: query
+          required: false
+          type: number
+      responses:
+        200:
+          description: Post's paginated comments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currentPage:
+                    type: number
+                  lastPage:
+                    type: number
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/definitions/Comment"
+        404:
+          description: Post does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the post owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+
+
 
 
 definitions:
@@ -1155,4 +1205,29 @@ definitions:
       subscriptionPrice:
         type: number
       profileVideo:
+        type: string
+  Comment:
+    type: object
+    properties:
+      id:
+        type: string
+      content:
+        type: string
+      userId:
+        type: string
+      postId:
+        type: string
+      user:
+        type: object
+        properties:
+          id:
+            type: string
+          username:
+            type: string
+          slug:
+            type: string
+          avatar:
+            type: string
+            nullable: true
+      createdAt:
         type: string

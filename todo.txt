@@ -1,1 +1,0 @@
--let the user in if they own the entity even though is not subscribed

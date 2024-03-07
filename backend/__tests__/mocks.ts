@@ -11,6 +11,7 @@ import PostService from "../services/PostService";
 import * as utils from '../utils';
 import FileService from "../services/FileService";
 import StripeService from "../services/StripeService";
+import CommentService from "../services/CommentService";
 
 export const mockUser: User = {
     id: '123',
@@ -242,3 +243,19 @@ export const mockIsPollOptionMine = vi.spyOn(PostService, 'isPollOptionMine');
 export const mockIsPollMine = vi.spyOn(PostService, 'isPollMine');
 
 export const mockIsPostMine = vi.spyOn(PostService, 'isPostMine');
+
+export const mockGetPostComments = vi.spyOn(CommentService, 'getPostComments');
+
+export const mockViewableComment = {
+    id: '123',
+    content: 'test comment content',
+    userId: '123',
+    postId: '123',
+    user: {
+        id: '123',
+        username: 'TestUser',
+        slug: 'testuser',
+        avatar: null
+    },
+    createdAt: new Date()
+}

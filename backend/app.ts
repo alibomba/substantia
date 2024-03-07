@@ -6,6 +6,7 @@ import yaml from 'yamljs';
 import userRoutes from './routes/userRoutes';
 import authRoutes from './routes/authRoutes';
 import postRoutes from './routes/postRoutes';
+import commentRoutes from './routes/commentRoutes';
 
 const app: Application = express();
 const swaggerConfig = yaml.load('./swagger.yaml');
@@ -19,5 +20,6 @@ app.use('/storage', express.static(`${__dirname}/public`));
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
 app.use('/api', postRoutes);
+app.use('/api', commentRoutes);
 
 export default app;
