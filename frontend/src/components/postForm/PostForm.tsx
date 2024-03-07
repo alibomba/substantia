@@ -91,7 +91,7 @@ const PostForm = ({ setPosts }: Props) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="p-2 w-[900px] max-w-full border-[3px] border-primary rounded-2xl">
+        <form onSubmit={handleSubmit} className="mb-16 p-2 w-[900px] max-w-full border-[3px] border-primary rounded-2xl">
             <div className="flex items-center gap-4 max-[500px]:flex-col max-[500px]:items-start">
                 <img className="w-[85px] max-sm:w-[70px] h-[85px] max-sm:h-[70px] object-cover rounded-full border-[3px] border-primary" src={avatar ? avatar : '/default.png'} alt="avatar" />
                 <input data-testid='postContentInput' value={postForm.content} onChange={changeContent} className="p-2 text-3xl max-sm:text-2xl border-[3px] w-full border-primary rounded-lg" aria-label='Treść posta' placeholder="Napisz coś..." type="text" maxLength={500} required />

@@ -93,6 +93,71 @@ class PostController {
         const posts = await PostService.getUserFeed(customerID, page);
         res.json(posts);
     }
+
+    public async vote(req: Request, res: Response) {
+        const { id } = req.params;
+        const { user } = req.body;
+        const option = await PostService.getPostPollOption(id);
+        if (!option) return res.status(404).json({ message: 'Ankieta nie istnieje' });
+        const customerID = await UserService.getUserCustomerID(user.id);
+        if (!customerID) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const planID = await UserService.getUserPlanID(option.poll.post.userId) as string;
+        if (!planID) return res.status(404).json({ message: 'Użytkownik nie istnieje' });
+        const isSubscribed = await StripeService.isSubscribed(customerID, planID);
+        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const optionVotes = await PostService.voteOnOption(id, user.id);
+        res.json(optionVotes);
+    }
+
+    public async getPollVotes(req: Request, res: Response) {
+        const { id } = req.params;
+        const { user } = req.body;
+        const myOption = await PostService.getMyVote(id, user.id);
+        if (myOption === null) return res.status(404).json({ message: 'Ankieta nie istnieje' });
+        const isSubscribed = await StripeService.isSubscribedToPollOwner(id, user.id);
+        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        if (myOption === false) return res.json({ selectedOption: null, percentages: [] });
+        const percentages = await PostService.voteOnOption(myOption, user.id);
+        res.json({ selectedOption: myOption, percentages });
+    }
+
+    public async postStats(req: Request, res: Response) {
+        const { id } = req.params;
+        const { user } = req.body;
+        const stats = await PostService.getPostStats(id);
+        if (!stats) return res.status(404).json({ message: 'Post nie istnieje' });
+        const isSubscribed = await StripeService.isSubscribedToPostOwner(id, user.id);
+        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const isLiked = await PostService.isLiked(id, user.id);
+        const isBookmarked = await PostService.isBookmarked(id, user.id);
+        res.json({
+            stats,
+            isLiked,
+            isBookmarked
+        });
+    }
+
+    public async likePost(req: Request, res: Response) {
+        const { id } = req.params;
+        const { user } = req.body;
+        if (!await PostService.doesPostExist(id)) return res.status(404).json({ message: 'Post nie istnieje' });
+        const isSubscribed = await StripeService.isSubscribedToPostOwner(id, user.id);
+        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const isLikedAfter = await PostService.togglePostLike(id, user.id);
+        if (isLikedAfter) res.sendStatus(201);
+        else res.sendStatus(204);
+    }
+
+    public async bookmarkPost(req: Request, res: Response) {
+        const { id } = req.params;
+        const { user } = req.body;
+        if (!await PostService.doesPostExist(id)) return res.status(404).json({ message: 'Post nie istnieje' });
+        const isSubscribed = await StripeService.isSubscribedToPostOwner(id, user.id);
+        if (!isSubscribed) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        const isBookmarkedAfter = await PostService.togglePostBookmark(id, user.id);
+        if (isBookmarkedAfter) res.sendStatus(201);
+        else res.sendStatus(204);
+    }
 }
 
 export default new PostController();

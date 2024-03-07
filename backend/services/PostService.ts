@@ -2,6 +2,7 @@ import prisma from "../models/prisma";
 import { Request } from 'express';
 import AzureService from "./AzureService";
 import StripeService from "./StripeService";
+import calculatePercentage from "../utils/calculatePercentage";
 
 class PostService {
     public postValidation(req: Request) {
@@ -78,6 +79,12 @@ class PostService {
         return post;
     }
 
+    public async doesPostExist(id: string) {
+        const post = await prisma.post.findUnique({ where: { id } });
+        if (post) return true;
+        else return false;
+    }
+
     public async getUserFeed(customerID: string, page: number) {
         const PER_PAGE = 10;
         const userSubscribedPlans = await StripeService.userSubscriptionPlansList(customerID);
@@ -103,6 +110,110 @@ class PostService {
             currentPage: page,
             lastPage,
             data: posts
+        }
+    }
+
+    public async getPostPollOption(id: string) {
+        return await prisma.postPollOption.findUnique({ where: { id }, select: { poll: { select: { post: { select: { userId: true } } } } } });
+    }
+
+    public async voteOnOption(id: string, userID: string) {
+        const result = await prisma.postPollOption.findUnique({ where: { id }, select: { poll: { select: { options: true } } } });
+        const optionIds = result!.poll.options.map(option => option.id);
+        const me = await prisma.user.findUnique({
+            where: { id: userID },
+            select: {
+                pollVotes: {
+                    where: {
+                        id: { in: optionIds }
+                    }
+                }
+            }
+        });
+        if (me!.pollVotes.length) {
+            const votedID = me!.pollVotes[0].id;
+            await prisma.user.update({ where: { id: userID }, data: { pollVotes: { disconnect: { id: votedID } } } });
+        }
+        await prisma.user.update({ where: { id: userID }, data: { pollVotes: { connect: { id } } } });
+        const allVotes = await prisma.postPollOption.findMany({ where: { id: { in: optionIds } }, select: { id: true, votes: true } });
+        const allVotesCount = allVotes.map(item => item.votes).flat().length;
+        const percentages = allVotes.map(item => {
+            const votes = item.votes;
+            const percentage = calculatePercentage(allVotesCount, votes.length);
+            return {
+                id: item.id,
+                percentage
+            }
+        });
+        return percentages;
+    }
+
+    public async getMyVote(pollID: string, userID: string) {
+        const poll = await prisma.postPoll.findUnique({ where: { id: pollID }, select: { options: { select: { id: true } } } });
+        if (!poll) return null;
+        const optionIds = poll.options.map(option => option.id);
+        const me = await prisma.user.findUnique({
+            where: { id: userID },
+            select: {
+                pollVotes: {
+                    where: { id: { in: optionIds } }
+                }
+            }
+        });
+        if (me!.pollVotes.length) {
+            return me!.pollVotes[0].id;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public async getPostStats(id: string) {
+        const post = await prisma.post.findUnique({
+            where: { id },
+            select: {
+                likes: true,
+                comments: true
+            }
+        });
+        if (!post) return null;
+        return {
+            likes: post.likes.length,
+            comments: post.comments.length,
+        }
+    }
+
+    public async isLiked(id: string, userId: string) {
+        const like = await prisma.postLike.findFirst({ where: { postId: id, userId } });
+        if (like) return true;
+        else return false;
+    }
+
+    public async isBookmarked(id: string, userId: string) {
+        const bookmark = await prisma.bookmark.findFirst({ where: { postId: id, userId } });
+        if (bookmark) return true;
+        else return false;
+    }
+
+    public async togglePostLike(id: string, userId: string) {
+        const like = await prisma.postLike.findFirst({ where: { postId: id, userId } });
+        if (like) {
+            await prisma.postLike.delete({ where: { id: like.id } });
+            return false;
+        } else {
+            await prisma.postLike.create({ data: { postId: id, userId } });
+            return true;
+        }
+    }
+
+    public async togglePostBookmark(id: string, userId: string) {
+        const bookmark = await prisma.bookmark.findFirst({ where: { postId: id, userId } });
+        if (bookmark) {
+            await prisma.bookmark.delete({ where: { id: bookmark.id } });
+            return false;
+        } else {
+            await prisma.bookmark.create({ data: { postId: id, userId } });
+            return true;
         }
     }
 }

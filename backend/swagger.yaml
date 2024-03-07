@@ -770,8 +770,210 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/vote/{id}:
+    post:
+      summary: Vote on a specified option in the poll associated to a post
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Vote was successful        
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    percentage:
+                      type: number
+        404:
+          description: User or poll option was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the given profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/poll-votes/{id}:
+    get:
+      summary: Get selected option and percentages of the post poll
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Votes were retrieved correctly
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  selectedOption:
+                    type: string
+                    nullable: true
+                  percentages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        percentage:
+                          type: number
+        404:
+          description: Post poll does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the poll owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/post-stats/{id}:
+    get:
+      summary: Get post stats and check if the logged in user likes it or has it in bookmarks
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Post stats and other information were retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stats:
+                    type: object
+                    properties:
+                      likes:
+                        type: number
+                      comments:
+                        type: number
+                  isLiked:
+                    type: boolean
+                  isBookmarked:
+                    type: boolean
+        404:
+          description: Post does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the post owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/like-post/{id}:
+    post:
+      summary: Toggle like of the specified post
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        201:
+          description: Like was added to the post
+        204:
+          description: Like was deleted from the post
+        404:
+          description: Post does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the post owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+  /api/bookmark-post/{id}:
+    post:
+      summary: Toggle bookmark of the specified post
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        201:
+          description: The post was bookmarked
+        204:
+          description: The post was unbookmarked
+        404:
+          description: Post does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the post owner
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
 
-        
 
 definitions:
   Error:

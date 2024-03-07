@@ -202,3 +202,33 @@ export const mockViewablePost = {
     },
     createdAt: new Date()
 }
+
+export const mockGetPostPollOption = vi.spyOn(PostService, 'getPostPollOption');
+
+export const mockPostPollOption = {
+    poll: {
+        post: {
+            userId: '123'
+        }
+    }
+}
+
+export const mockVoteOnOption = vi.spyOn(PostService, 'voteOnOption');
+
+export const mockGetMyVote = vi.spyOn(PostService, 'getMyVote');
+
+export const mockGetPostStats = vi.spyOn(PostService, 'getPostStats');
+
+export const mockIsLiked = vi.spyOn(PostService, 'isLiked');
+
+export const mockIsBookmarked = vi.spyOn(PostService, 'isBookmarked');
+
+export const mockIsSubscribedToPollOwner = vi.spyOn(StripeService, 'isSubscribedToPollOwner');
+
+export const mockIsSubscribedToPostOwner = vi.spyOn(StripeService, 'isSubscribedToPostOwner');
+
+export const mockDoesPostExist = vi.spyOn(PostService, 'doesPostExist');
+
+export const mockTogglePostLike = vi.spyOn(PostService, 'togglePostLike');
+
+export const mockTogglePostBookmark = vi.spyOn(PostService, 'togglePostBookmark');

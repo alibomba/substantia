@@ -4,6 +4,7 @@ import postSeeder from "./postSeeder";
 import postImageSeeder from "./postImageSeeder";
 import postPollSeeder from "./postPollSeeder";
 import postPollOptionSeeder from "./postPollOptionSeeder";
+import postPollVotesSeeder from "./postPollVotesSeeder";
 
 async function truncate() {
     await prisma.bookmark.deleteMany();
@@ -28,7 +29,7 @@ async function main() {
     await postImageSeeder();
     await postPollSeeder();
     await postPollOptionSeeder();
-
+    await postPollVotesSeeder();
 
     console.log('DB seeded');
 }

@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import prisma from "../models/prisma";
+import UserService from "./UserService";
 
 
 class StripeService {
@@ -81,6 +82,22 @@ class StripeService {
             status: 'active'
         });
         return subscriptions.data.map(subscription => subscription.items.data[0].plan.id);
+    }
+
+    public async isSubscribedToPollOwner(id: string, userId: string) {
+        const customerID = await UserService.getUserCustomerID(userId);
+        if (!customerID) return false;
+        const poll = await prisma.postPoll.findUnique({ where: { id }, select: { post: { select: { userId: true } } } });
+        const planID = await UserService.getUserPlanID(poll!.post.userId) as string;
+        return this.isSubscribed(customerID, planID);
+    }
+
+    public async isSubscribedToPostOwner(id: string, userId: string) {
+        const customerID = await UserService.getUserCustomerID(userId);
+        if (!customerID) return false;
+        const post = await prisma.post.findUnique({ where: { id }, select: { userId: true } });
+        const planID = await UserService.getUserPlanID(post!.userId) as string;
+        return this.isSubscribed(customerID, planID);
     }
 }
 
