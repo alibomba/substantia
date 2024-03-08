@@ -98,6 +98,11 @@ class CommentService {
             return true;
         }
     }
+
+    public async createComment(content: string, postId: string, userId: string) {
+        const comment = await prisma.postComment.create({ data: { content, postId, userId } });
+        return await this.getComment(comment.id);
+    }
 }
 
 export default new CommentService();

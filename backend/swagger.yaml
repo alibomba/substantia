@@ -1237,8 +1237,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+  /api/comments/{id}:
+    post:
+      summary: Add a comment to the specified post
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: content
+          in: body
+          required: true
+          type: string
+      responses:
+        201:
+          description: Comment was added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Comment"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        404:
+          description: Post does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
 
-                
+
 definitions:
   Error:
     type: object

@@ -9,5 +9,6 @@ router.get('/comment-stats/:id', jwtAuthentication, CommentController.commentSta
 router.post('/like-comment/:id', jwtAuthentication, CommentController.like);
 router.get('/comment-replies/:id', jwtAuthentication, CommentController.commentReplies);
 router.post('/like-reply/:id', jwtAuthentication, CommentController.likeReply);
+router.post('/comments/:id', jwtAuthentication, CommentController.createComment);
 
 export default router;

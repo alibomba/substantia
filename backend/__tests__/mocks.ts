@@ -296,3 +296,5 @@ export const mockIsSubscribedToRepliedPostOwner = vi.spyOn(StripeService, 'isSub
 export const mockIsRepliedPostMine = vi.spyOn(PostService, 'isRepliedPostMine');
 
 export const mockToggleReplyLike = vi.spyOn(CommentService, 'toggleReplyLike');
+
+export const mockCreateComment = vi.spyOn(CommentService, 'createComment');

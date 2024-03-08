@@ -109,7 +109,7 @@ model PostLike {
 
 model PostComment {
   id        String         @id @default(uuid())
-  content   String //max 400ch
+  content   String
   likes     CommentLike[]
   replies   CommentReply[]
   userId    String
