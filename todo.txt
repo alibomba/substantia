@@ -1,2 +1,0 @@
--change default expanded state to false for comments and replies
--when getting post comments count on the backend, include all the subsequent replies

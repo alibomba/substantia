@@ -88,7 +88,7 @@ const PostComment = ({ comment }: Props) => {
             <div>
                 <div className="flex items-center gap-3">
                     <Link to={`/profil/${comment.userId}`}>
-                        <img className="w-[75px] max-sm:w-[60px] h-[75px] max-sm:h-[60px] object-cover rounded-full border-[3px] border-primary" src={comment.user.avatar || '/default.png'} alt="avatar użytkownika" />
+                        <img data-testid='avatar' className="w-[75px] max-sm:w-[60px] h-[75px] max-sm:h-[60px] object-cover rounded-full border-[3px] border-primary" src={comment.user.avatar || '/default.png'} alt="avatar użytkownika" />
                     </Link>
                     <div className="flex flex-col items-start">
                         <h3 className="text-3xl max-sm:text-2xl font-bold"><Link to={`/profil/${comment.userId}`}>{comment.user.username}</Link></h3>
@@ -105,13 +105,13 @@ const PostComment = ({ comment }: Props) => {
                                     isLiked ? <FaHeart /> : <CiHeart />
                                 }
                             </button>
-                            <span className='text-3xl max-sm:text-2xl font-bold'>{stats.likes}</span>
+                            <span data-testid='likeCount' className='text-3xl max-sm:text-2xl font-bold'>{stats.likes}</span>
                         </p>
                         <p className="flex items-center gap-2 max-sm:gap-1">
                             <button onClick={toggleReplies} title='Przełącz widoczność odpowiedzi do komentarza' className='text-4xl max-sm:text-3xl text-primary hover:text-primaryHover transition-primary'>
                                 <BiSolidComment />
                             </button>
-                            <span className='text-3xl max-sm:text-2xl font-bold'>{stats.replies}</span>
+                            <span data-testid='replyCount' className='text-3xl max-sm:text-2xl font-bold'>{stats.replies}</span>
                         </p>
                     </div>
                 }

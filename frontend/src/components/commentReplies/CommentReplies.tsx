@@ -71,7 +71,7 @@ const CommentReplies = ({ commentId }: Props) => {
 
     return (
         <div className="mt-4 flex flex-col gap-8">
-            <form onSubmit={addReply} className="flex items-center gap-4">
+            <form data-testid='replyForm' onSubmit={addReply} className="flex items-center gap-4">
                 <input aria-label='Odpowiedz' className="text-2xl max-sm:text-xl p-2 border-[3px] border-primary rounded-lg w-full" placeholder="Odpowiedz..." type="text" required maxLength={400} />
                 <button className="text-4xl text-primary hover:text-primaryHover transition-primary" title="Opublikuj odpowiedź">
                     <IoSend />

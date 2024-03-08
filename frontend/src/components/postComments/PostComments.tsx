@@ -91,7 +91,7 @@ const PostComments = ({ postId }: Props) => {
 
     return (
         <div className="px-10 max-sm:px-4 py-4 border-[3px] border-t-0 border-primary rounded-2xl rounded-tl-none rounded-tr-none">
-            <form onSubmit={addComment} className="flex items-center gap-4">
+            <form data-testid='commentForm' onSubmit={addComment} className="flex items-center gap-4">
                 <input aria-label='Napisz komentarz' className="text-2xl max-sm:text-xl p-2 border-[3px] border-primary rounded-lg w-full" placeholder="Napisz komentarz..." type="text" required maxLength={400} />
                 <button className='text-4xl text-primary hover:text-primaryHover transition-primary' title="Opublikuj komentarz">
                     <IoSend />

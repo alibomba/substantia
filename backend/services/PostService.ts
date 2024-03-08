@@ -177,9 +177,14 @@ class PostService {
             }
         });
         if (!post) return null;
+        let replies = 0;
+        for (let comment of post.comments) {
+            const commentReplies = await prisma.commentReply.findMany({ where: { commentId: comment.id } });
+            replies += commentReplies.length;
+        }
         return {
             likes: post.likes.length,
-            comments: post.comments.length,
+            comments: post.comments.length + replies,
         }
     }
 

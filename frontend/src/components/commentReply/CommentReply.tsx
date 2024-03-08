@@ -88,7 +88,7 @@ const CommentReply = ({ reply, setReplies }: Props) => {
         <article className="ml-[87px] max-sm:ml-[45px]">
             <div className="flex items-center gap-3">
                 <Link to={`/profil/${reply.userId}`}>
-                    <img className="w-[75px] max-sm:w-[60px] h-[75px] max-sm:h-[60px] object-cover rounded-full border-[3px] border-primary" src={reply.user.avatar || '/default.png'} alt="avatar użytkownika" />
+                    <img data-testid='avatar' className="w-[75px] max-sm:w-[60px] h-[75px] max-sm:h-[60px] object-cover rounded-full border-[3px] border-primary" src={reply.user.avatar || '/default.png'} alt="avatar użytkownika" />
                 </Link>
                 <div className="flex flex-col items-start">
                     <h3 className="text-3xl max-sm:text-2xl font-bold"><Link to={`/profil/${reply.userId}`}>{reply.user.username}</Link></h3>
@@ -102,7 +102,7 @@ const CommentReply = ({ reply, setReplies }: Props) => {
                         isLiked ? <FaHeart /> : <CiHeart />
                     }
                 </button>
-                <span className="text-3xl max-sm:text-2xl font-bold">{reply.likes}</span>
+                <span data-testid='likeCount' className="text-3xl max-sm:text-2xl font-bold">{reply.likes}</span>
             </p>
             <Popup active={popup.active} type={popup.type}>{popup.content}</Popup>
         </article>

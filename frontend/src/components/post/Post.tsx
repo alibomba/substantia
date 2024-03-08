@@ -19,7 +19,7 @@ const Post = ({ post }: Props) => {
             <div className={`p-2 w-full border-[3px] border-primary rounded-2xl ${areCommentsVisible && ' rounded-bl-none rounded-br-none'} flex flex-col gap-2`}>
                 <div className="flex items-center gap-3">
                     <Link to={`/profil/${post.userId}`}>
-                        <img className="w-[85px] max-sm:w-[70px] h-[85px] max-sm:h-[70px] object-cover rounded-full border-[3px] border-primary" src={post.user.avatar || '/default.png'} alt="avatar użytkownika" />
+                        <img data-testid='avatar' className="w-[85px] max-sm:w-[70px] h-[85px] max-sm:h-[70px] object-cover rounded-full border-[3px] border-primary" src={post.user.avatar || '/default.png'} alt="avatar użytkownika" />
                     </Link>
                     <div className="flex flex-col items-start">
                         <h3 className="text-3xl font-bold"><Link to={`/profil/${post.userId}`}>{post.user.username}</Link></h3>
