@@ -12,7 +12,7 @@ interface Props {
 
 const Post = ({ post }: Props) => {
     const [fullScreenPhoto, setFullScreenPhoto] = useState<number | null>(null);
-    const [areCommentsVisible, setAreCommentsVisible] = useState<boolean>(true);
+    const [areCommentsVisible, setAreCommentsVisible] = useState<boolean>(false);
 
     return (
         <>

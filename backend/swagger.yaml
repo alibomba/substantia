@@ -1326,6 +1326,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"    
+  /api/is-reply-liked/{id}:
+    get:
+      summary: Check if the logged in user liked the specified comment reply
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Information was retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isLiked:
+                    type: boolean
+        404:
+          description: Comment reply does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"    
+
 
 
 

@@ -7,6 +7,7 @@ import axiosClient from "../../axiosClient"
 import { FaHeart } from "react-icons/fa"
 import { CiHeart } from "react-icons/ci"
 import { BiSolidComment } from "react-icons/bi"
+import CommentReplies from "../commentReplies/CommentReplies"
 
 
 interface Props {
@@ -20,6 +21,7 @@ interface CommentStats {
 
 const PostComment = ({ comment }: Props) => {
     const [isLiked, setIsLiked] = useState<boolean>(false);
+    const [areRepliesVisible, setAreRepliesVisible] = useState<boolean>(false);
     const [stats, setStats] = useState<CommentStats | null>(null);
     const [error, setError] = useState<boolean>(false);
     const [popup, setPopup] = useState<Popup>({ content: null, active: false, type: 'good' });
@@ -73,6 +75,10 @@ const PostComment = ({ comment }: Props) => {
         }
     }
 
+    function toggleReplies() {
+        setAreRepliesVisible(prev => !prev);
+    }
+
     if (error) {
         return <Error />
     }
@@ -102,7 +108,7 @@ const PostComment = ({ comment }: Props) => {
                             <span className='text-3xl max-sm:text-2xl font-bold'>{stats.likes}</span>
                         </p>
                         <p className="flex items-center gap-2 max-sm:gap-1">
-                            <button onClick={like} title='Przełącz widoczność odpowiedzi do komentarza' className='text-4xl max-sm:text-3xl text-primary hover:text-primaryHover transition-primary'>
+                            <button onClick={toggleReplies} title='Przełącz widoczność odpowiedzi do komentarza' className='text-4xl max-sm:text-3xl text-primary hover:text-primaryHover transition-primary'>
                                 <BiSolidComment />
                             </button>
                             <span className='text-3xl max-sm:text-2xl font-bold'>{stats.replies}</span>
@@ -110,6 +116,10 @@ const PostComment = ({ comment }: Props) => {
                     </div>
                 }
             </div>
+            {
+                areRepliesVisible &&
+                <CommentReplies commentId={comment.id} />
+            }
             <Popup active={popup.active} type={popup.type}>{popup.content}</Popup>
         </>
     )

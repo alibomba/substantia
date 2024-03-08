@@ -11,5 +11,6 @@ router.get('/comment-replies/:id', jwtAuthentication, CommentController.commentR
 router.post('/like-reply/:id', jwtAuthentication, CommentController.likeReply);
 router.post('/comments/:id', jwtAuthentication, CommentController.createComment);
 router.post('/comment-replies/:id', jwtAuthentication, CommentController.createReply);
+router.get('/is-reply-liked/:id', jwtAuthentication, CommentController.isReplyLiked);
 
 export default router;

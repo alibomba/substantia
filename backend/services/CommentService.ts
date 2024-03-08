@@ -72,7 +72,7 @@ class CommentService {
     }
 
     public async getCommentReplies(id: string) {
-        const comment = await prisma.postComment.findUnique({ where: { id }, select: { replies: { select: { id: true } } } });
+        const comment = await prisma.postComment.findUnique({ where: { id }, select: { replies: { select: { id: true }, orderBy: { createdAt: 'desc' } } } });
         return await Promise.all(comment!.replies.map(async item => {
             const id = item.id;
             const reply = await prisma.commentReply.findUnique({ where: { id }, include: { user: { select: { id: true, username: true, slug: true, avatar: true } } } });
@@ -108,6 +108,12 @@ class CommentService {
         const reply = await prisma.commentReply.create({ data: { content, commentId, userId }, include: { user: { select: { id: true, username: true, slug: true, avatar: true } } } });
         if (reply.user.avatar) reply.user.avatar = await AzureService.getAzureObject(`pfp/${reply.user.avatar}`);
         return reply;
+    }
+
+    public async isReplyLiked(id: string, userId: string) {
+        const like = await prisma.replyLike.findFirst({ where: { replyId: id, userId } });
+        if (like) return true;
+        else return false;
     }
 }
 
