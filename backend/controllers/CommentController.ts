@@ -81,6 +81,19 @@ class CommentController {
         const comment = await CommentService.createComment(content, id, user.id);
         res.status(201).json(comment);
     }
+
+    public async createReply(req: Request, res: Response) {
+        const { id } = req.params;
+        const { user, content } = req.body;
+        if (!await CommentService.doesCommentExist(id)) return res.status(404).json({ message: 'Komentarz nie istnieje' });
+        const isSubscribed = await StripeService.isSubscribedToCommentedPostOwner(id, user.id);
+        const isPostMine = await PostService.isCommentedPostMine(id, user.id);
+        if (!isSubscribed && !isPostMine) return res.status(403).json({ message: 'Nie subskrybujesz tego profilu' });
+        if (!content) return res.status(422).json({ message: 'Treść odpowiedzi jest wymagana' });
+        if (content.length > 400) return res.status(422).json({ message: 'Treść odpowiedzi może mieć maksymalnie 400 znaków' });
+        const reply = await CommentService.createReply(content, id, user.id);
+        res.status(201).json(reply);
+    }
 }
 
 export default new CommentController();

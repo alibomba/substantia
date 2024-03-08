@@ -1204,6 +1204,50 @@ paths:
             application/json:
               schema:
                 $ref: "#/definitions/Error"
+    post:
+      summary: Add a reply to the specified comment
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: content
+          in: body
+          required: true
+          type: string
+      responses:
+        201:
+          description: Reply was added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/CommentReply"
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        404:
+          description: Comment does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        403:
+          description: User is not subscribed to the profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
+        401:
+          description: User is unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/Error"
   /api/like-reply/{id}:
     post:
       summary: Toggle like of the specified comment reply
@@ -1281,7 +1325,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/definitions/Error"
+                $ref: "#/definitions/Error"    
+
 
 
 definitions:

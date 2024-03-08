@@ -103,6 +103,12 @@ class CommentService {
         const comment = await prisma.postComment.create({ data: { content, postId, userId } });
         return await this.getComment(comment.id);
     }
+
+    public async createReply(content: string, commentId: string, userId: string) {
+        const reply = await prisma.commentReply.create({ data: { content, commentId, userId }, include: { user: { select: { id: true, username: true, slug: true, avatar: true } } } });
+        if (reply.user.avatar) reply.user.avatar = await AzureService.getAzureObject(`pfp/${reply.user.avatar}`);
+        return reply;
+    }
 }
 
 export default new CommentService();
