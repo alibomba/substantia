@@ -4,11 +4,13 @@ import { ProfileHeader } from '..';
 const noAvatar = <ProfileHeader
     profile={{ id: '123', banner: '/banner.jpg', facebook: '#', instagram: '#', twitter: null, avatar: null, username: 'TestUser', slug: 'testuser', subscriptionPrice: 1299, description: 'test user description', profileVideo: '/video.mp4' }}
     isSubscribed={false}
+    setIsSubscribed={vi.fn()}
 />
 
 const withAvatar = <ProfileHeader
     profile={{ id: '123', banner: '/banner.jpg', facebook: '#', instagram: '#', twitter: null, avatar: '/avatar.jpg', username: 'TestUser', slug: 'testuser', subscriptionPrice: 1299, description: 'test user description', profileVideo: '/video.mp4' }}
     isSubscribed={false}
+    setIsSubscribed={vi.fn()}
 />
 
 vi.mock('../../components/subscribeButton/SubscribeButton');

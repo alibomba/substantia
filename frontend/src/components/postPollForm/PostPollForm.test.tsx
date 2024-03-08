@@ -1,7 +1,6 @@
-import { getByTestId, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import PostPollForm from './PostPollForm';
 
-const emptyPoll = [];
 const pollWithOneOption = ['one option'];
 const pollWithMultipleOptions = ['first option', 'second option', 'third option'];
 

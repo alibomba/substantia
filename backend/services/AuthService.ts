@@ -1,8 +1,7 @@
 import prisma from "../models/prisma";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { MyJWTPayload } from "../types";
-
 class AuthService {
     public async hashPassword(password: string) {
         return await bcrypt.hash(password, 10);

@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "tailwindcss -i ./src/index.css -o ./src/test/index.css && vitest"
+    "test": "tailwindcss -i ./src/index.css -o ./src/test/index.css && vitest --run"
   },
   "dependencies": {
     "axios": "^1.6.7",
